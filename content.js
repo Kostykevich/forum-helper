@@ -76,56 +76,83 @@ window.addEventListener('load', () => {
 		return cid
 	}
 
-	// content.js (или ваш файл, где создаются кнопки на странице)
+	function darkenColor(hex, amount) {
+		const num = parseInt(hex.replace('#', ''), 16)
+		let r = (num >> 16) & 0xff
+		let g = (num >> 8) & 0xff
+		let b = num & 0xff
+
+		r = Math.max(0, Math.min(255, Math.floor(r * (1 - amount))))
+		g = Math.max(0, Math.min(255, Math.floor(g * (1 - amount))))
+		b = Math.max(0, Math.min(255, Math.floor(b * (1 - amount))))
+
+		return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
+	}
+
 	function createButton(text, onClick) {
 		const btn = document.createElement('button')
 		btn.textContent = text
-		btn.style.cursor = 'pointer'
-		btn.style.display = 'block'
+		btn.classList.add('custom-btn')
 
-		// Считываем все нужные CSS-параметры из настроек:
+		// Добавляем внешний отступ между кнопками
+		btn.style.marginBottom = '12px' // можно настроить
+
 		chrome.storage.sync.get(
 			[
-				'selectedFont',
-				'selectedFontSize',
 				'buttonBgColor',
 				'buttonTextColor',
 				'buttonBorderRadius',
 				'buttonPadding',
+				'selectedFont',
+				'selectedFontSize',
+				'buttonWidth',
+				'buttonHeight',
+				'buttonBold',
+				'buttonItalic',
 			],
 			data => {
-				// Шрифт:
-				const font = data.selectedFont || 'Arial'
-				const fontSize = (data.selectedFontSize || 16) + 'px'
-
-				// Цвета:
 				const bgColor = data.buttonBgColor || '#FF5722'
-				const txtColor = data.buttonTextColor || '#FFFFFF'
+				const textColor = data.buttonTextColor || '#FFFFFF'
+				const borderRadius = data.buttonBorderRadius || '6px'
+				const paddingVal = data.buttonPadding || '10px 15px'
+				const fontFamily = data.selectedFont || 'Arial, sans-serif'
+				const fontSizePx = (data.selectedFontSize || 16) + 'px'
+				const widthVal = data.buttonWidth ? data.buttonWidth + 'px' : 'auto'
+				const heightVal = data.buttonHeight ? data.buttonHeight + 'px' : 'auto'
+				const boldOn = !!data.buttonBold
+				const italicOn = !!data.buttonItalic
 
-				// Скругление:
-				const radius = data.buttonBorderRadius || '10px'
-
-				// Паддинг:
-				const pad = data.buttonPadding || '10px 15px'
-
-				// Применяем стили:
-				btn.style.fontFamily = font
-				btn.style.fontSize = fontSize
+				// Применяем стили
 				btn.style.backgroundColor = bgColor
-				btn.style.color = txtColor
+				btn.style.color = textColor
 				btn.style.border = `2px solid ${bgColor}`
-				btn.style.borderRadius = radius
-				btn.style.padding = pad
+				btn.style.borderRadius = borderRadius
+				btn.style.padding = paddingVal
+				btn.style.fontFamily = fontFamily
+				btn.style.fontSize = fontSizePx
+				btn.style.width = widthVal
+				btn.style.height = heightVal
+				btn.style.fontWeight = boldOn ? 'bold' : 'normal'
+				btn.style.fontStyle = italicOn ? 'italic' : 'normal'
 
-				// Дополнительно вы можете задать margin-bottom или другие мелочи:
-				btn.style.marginBottom = '10px'
-				btn.style.position = 'relative'
+				// Вычисляем чуть более тёмный цвет для hover
+				const hoverColor = darkenColor(bgColor, 0.2)
+
+				btn.addEventListener('mouseover', () => {
+					btn.style.backgroundColor = hoverColor
+					btn.style.borderColor = hoverColor
+				})
+				btn.addEventListener('mouseout', () => {
+					btn.style.backgroundColor = bgColor
+					btn.style.borderColor = bgColor
+				})
 			}
 		)
 
 		btn.addEventListener('click', onClick)
 		return btn
 	}
+  
 
 	const insertText = text => {
 		const editableDiv = document.querySelector(

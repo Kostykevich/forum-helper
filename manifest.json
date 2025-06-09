@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Forum Helper",
-	"version": "2.0",
+	"version": "2.1",
 	"description": "Вспомогательное расширение для форума.\nРаботает только на форуме Radmir Мой Дом. \nСоздатель by @Kostykevich",
 	"permissions": ["storage", "activeTab", "scripting"],
 	"host_permissions": ["*://forum.gtadom.com/*"],

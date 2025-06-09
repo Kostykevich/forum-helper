@@ -349,11 +349,13 @@
       <input type="color" id="stylePrimaryColor" value="#FF5722">
       <span class="color-value" id="valPrimaryColor">#FF5722</span>
     </div>
+
     <div class="style-row">
       <label for="styleStatusColor">Цвет текста:</label>
       <input type="color" id="styleStatusColor" value="#FFFFFF">
       <span class="color-value" id="valStatusColor">#FFFFFF</span>
     </div>
+
     <div class="style-row">
       <label for="styleEditColor">Цвет для “edit” действий:</label>
       <input type="color" id="styleEditColor" value="#FFA500">
@@ -363,7 +365,7 @@
     <div class="style-row">
       <label for="styleFont">Шрифт:</label>
       <select id="styleFont">
-        <option value="Arial, sans-serif">Arial, sans-serif</option>
+        <option value="Arial, sans-serif" selected>Arial, sans-serif</option>
         <option value="Verdana, sans-serif">Verdana, sans-serif</option>
         <option value="Tahoma, sans-serif">Tahoma, sans-serif</option>
         <option value="Trebuchet MS, sans-serif">Trebuchet MS, sans-serif</option>
@@ -374,32 +376,35 @@
 
     <div class="style-row">
       <label for="styleFontSize">Размер шрифта (px):</label>
-      <input type="number" id="styleFontSize" placeholder="16">
+      <input type="number" id="styleFontSize" value="16">
     </div>
 
     <div class="style-row">
       <label>Стиль шрифта:</label>
-      <div style="display:flex; gap:20px;">
+      <div style="display: flex; gap: 20px;">
         <label><input type="checkbox" id="styleBold"> Жирный</label>
         <label><input type="checkbox" id="styleItalic"> Курсив</label>
       </div>
     </div>
 
     <div class="style-row">
-      <label for="styleWidth">Ширина кнопки (px):</label>
-      <input type="number" id="styleWidth" placeholder="auto">
+      <label for="styleWidth">Ширина кнопки:</label>
+      <input type="text" id="styleWidth" value="auto" placeholder="auto">
     </div>
+
     <div class="style-row">
-      <label for="styleHeight">Высота кнопки (px):</label>
-      <input type="number" id="styleHeight" placeholder="auto">
+      <label for="styleHeight">Высота кнопки:</label>
+      <input type="text" id="styleHeight" value="auto" placeholder="auto">
     </div>
+
     <div class="style-row">
       <label for="styleBorderRadius">Скругление (px):</label>
-      <input type="number" id="styleBorderRadius" placeholder="6">
+      <input type="number" id="styleBorderRadius" value="6">
     </div>
+
     <div class="style-row">
-      <label for="stylePadding">Padding (например: "10px 15px"):</label>
-      <input type="text" id="stylePadding" placeholder="10px 15px">
+      <label for="stylePadding">Padding:</label>
+      <input type="text" id="stylePadding" value="10px 15px">
     </div>
 
     <div class="style-actions">
