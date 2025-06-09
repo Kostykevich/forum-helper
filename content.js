@@ -398,7 +398,11 @@ window.addEventListener('load', () => {
 			
 
     const createAllButtonsR = rootContainer => {
-			chrome.storage.sync.get(['buttonBgColor'], data => {
+			chrome.storage.sync.get([
+				'buttonBgColor',
+				'buttonBold',
+				'buttonItalic',
+			], data => {
 				const baseColor = data.buttonBgColor || '#FF5722'
 
 				// простая функция, которая затемняет HEX-цвет на заданный процент
@@ -440,8 +444,13 @@ window.addEventListener('load', () => {
 					)
 				}
 
-				// пример: контейнер будет на 20% темнее, чем baseColor
-				const dropdownBgColor = darkenColor(baseColor, 20)
+				const boldOn = !!data.buttonBold
+				const italicOn = !!data.buttonItalic
+
+				const btnBg = baseColor
+				const btnHover = darkenColor(baseColor, 20)
+				const dropdownBgColor = darkenColor(btnHover, 20)
+				const ddBgColor = darkenColor(btnHover, 20)
 
 				// 1) создаём и прописываем главные кнопки
 				const mainButton_mute = document.createElement('button')
@@ -455,6 +464,8 @@ window.addEventListener('load', () => {
 				mainButton_mute.style.fontSize = '16px'
 				mainButton_mute.style.marginBottom = '10px'
 				mainButton_mute.style.position = 'relative'
+				mainButton_mute.style.fontWeight = boldOn ? 'bold' : 'normal'
+				mainButton_mute.style.fontStyle = italicOn ? 'italic' : 'normal'
 				rootContainer.appendChild(mainButton_mute)
 
 				const mainButton_ajail = document.createElement('button')
@@ -468,6 +479,8 @@ window.addEventListener('load', () => {
 				mainButton_ajail.style.fontSize = '16px'
 				mainButton_ajail.style.marginBottom = '10px'
 				mainButton_ajail.style.position = 'relative'
+				mainButton_ajail.style.fontWeight = boldOn ? 'bold' : 'normal'
+				mainButton_ajail.style.fontStyle = italicOn ? 'italic' : 'normal'
 				rootContainer.appendChild(mainButton_ajail)
 
 				const mainButton_ban = document.createElement('button')
@@ -481,6 +494,8 @@ window.addEventListener('load', () => {
 				mainButton_ban.style.fontSize = '16px'
 				mainButton_ban.style.marginBottom = '10px'
 				mainButton_ban.style.position = 'relative'
+				mainButton_ban.style.fontWeight = boldOn ? 'bold' : 'normal'
+				mainButton_ban.style.fontStyle = italicOn ? 'italic' : 'normal'
 				rootContainer.appendChild(mainButton_ban)
 
 				// 2) Функция для создания «дропдауна» под кнопкой, с фоном чуть темнее baseColor
@@ -488,9 +503,7 @@ window.addEventListener('load', () => {
 					const container = document.createElement('div')
 					container.id = id
 					container.style.position = 'absolute'
-					// фон на 20% темнее, чем baseColor:
-					container.style.backgroundColor = dropdownBgColor
-					// бордер можем сделать того же «тёмного» оттенка:
+					container.style.backgroundColor = dropdownBgColor // уже затемнённый фон
 					container.style.border = '2px solid ' + dropdownBgColor
 					container.style.borderRadius = '10px'
 					container.style.padding = '10px'
@@ -499,7 +512,6 @@ window.addEventListener('load', () => {
 					container.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'
 					container.style.zIndex = '1000'
 
-					// ширина как у кнопки и позиционирование сразу под ней:
 					const rect = parentButton.getBoundingClientRect()
 					container.style.width = rect.width + 'px'
 					container.style.top = rect.bottom + window.scrollY + 'px'
@@ -524,55 +536,85 @@ window.addEventListener('load', () => {
 				)
 
 				// 4) вспомогательная функция для пересчёта позиции «дропдауна» под кнопкой
+				// переменные для отслеживания открытого контейнера
+				let current = { button: null, container: null }
+
+				// вспомогательная функция для позиционирования
 				function positionBelow(button, dropdown) {
-					const rect = button.getBoundingClientRect()
-					dropdown.style.top = rect.bottom + window.scrollY + 3 + 'px'
-					dropdown.style.left = rect.left + window.scrollX + 'px'
+				  const rect = button.getBoundingClientRect()
+				  dropdown.style.top = rect.bottom + window.scrollY + 3 + 'px'
+				  dropdown.style.left = rect.left + window.scrollX + 'px'
 				}
+			
+				// функция закрытия контейнера
+				function closeCurrent() {
+				  if (current.container) {
+					current.container.style.display = 'none'
+					current.button.style.backgroundColor = btnBg
+					current.button.style.borderColor = btnBg
+					current = { button: null, container: null }
+				  }
+				}
+			
+				// обработчик кликов вне кнопок и контейнеров
+				document.addEventListener('click', e => {
+				  const isInside = [
+					mainButton_mute, mainButton_ajail, mainButton_ban,
+					buttonContainer_mute, buttonContainer_ajail, buttonContainer_ban
+				  ].some(el => el.contains(e.target))
+				  if (!isInside) closeCurrent()
+				})
+			
+				// 3) навешиваем event listeners
+				;;[
+					{
+						button: mainButton_mute,
+						container: buttonContainer_mute,
+					},
+					{
+						button: mainButton_ajail,
+						container: buttonContainer_ajail,
+					},
+					{
+						button: mainButton_ban,
+						container: buttonContainer_ban,
+					},
+				].forEach(({ button, container }) => {
+					// hover
+					button.addEventListener('mouseover', () => {
+						button.style.backgroundColor = btnHover
+						button.style.borderColor = btnHover
+					})
+					button.addEventListener('mouseout', () => {
+						if (container.style.display === 'flex') {
+							button.style.backgroundColor = dropdownBgColor
+							button.style.borderColor = dropdownBgColor
+						} else {
+							button.style.backgroundColor = btnBg
+							button.style.borderColor = btnBg
+						}
+					})
 
-				// 5) навешиваем клики на главные кнопки, чтобы они переключали цвет и открывали свой «дропдаун»
-				mainButton_mute.addEventListener('click', () => {
-					positionBelow(mainButton_mute, buttonContainer_mute)
-					// переключаем цвет самой кнопки (светлее ↔ темнее)
-					if (mainButton_mute.style.backgroundColor === 'rgb(255,  87,  34)') {
-						mainButton_mute.style.backgroundColor = '#c06e35'
-						mainButton_mute.style.border = '2px solid #c06e35'
-					} else {
-						mainButton_mute.style.backgroundColor = baseColor
-						mainButton_mute.style.border = '2px solid ' + baseColor
-					}
-					buttonContainer_mute.style.display =
-						buttonContainer_mute.style.display === 'none' ? 'flex' : 'none'
+					// click
+					button.addEventListener('click', e => {
+						e.stopPropagation()
+						positionBelow(button, container)
+						// если открыт другой, закрываем его
+						if (current.container && current.container !== container) {
+							closeCurrent()
+						}
+						if (container.style.display === 'none') {
+							container.style.display = 'flex'
+							button.style.backgroundColor = dropdownBgColor
+							button.style.borderColor = dropdownBgColor
+							current = { button, container }
+						} else {
+							closeCurrent()
+						}
+					})
 				})
 
-				mainButton_ajail.addEventListener('click', () => {
-					positionBelow(mainButton_ajail, buttonContainer_ajail)
-					if (mainButton_ajail.style.backgroundColor === 'rgb(255,  87,  34)') {
-						mainButton_ajail.style.backgroundColor = '#c06e35'
-						mainButton_ajail.style.border = '2px solid #c06e35'
-					} else {
-						mainButton_ajail.style.backgroundColor = baseColor
-						mainButton_ajail.style.border = '2px solid ' + baseColor
-					}
-					buttonContainer_ajail.style.display =
-						buttonContainer_ajail.style.display === 'none' ? 'flex' : 'none'
-				})
-
-				mainButton_ban.addEventListener('click', () => {
-					positionBelow(mainButton_ban, buttonContainer_ban)
-					if (mainButton_ban.style.backgroundColor === 'rgb(255,  87,  34)') {
-						mainButton_ban.style.backgroundColor = '#c06e35'
-						mainButton_ban.style.border = '2px solid #c06e35'
-					} else {
-						mainButton_ban.style.backgroundColor = baseColor
-						mainButton_ban.style.border = '2px solid ' + baseColor
-					}
-					buttonContainer_ban.style.display =
-						buttonContainer_ban.style.display === 'none' ? 'flex' : 'none'
-				})
-
-				// Добавляем кнопки в контейнер
-				;('------------------------------------MUTE-------------------------------------------')
+				// Добавляем кнопки в контейнер('------------------------------------MUTE-------------------------------------------')
 
 				buttonContainer_mute.appendChild(
 					createButton(
