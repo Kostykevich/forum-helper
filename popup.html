@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaint Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      padding: 20px;
+    }
+
+    .option {
+      margin-bottom: 20px;
+      color: #FF5722;
+      transition: color 0.3s ease;
+    }
+
+    .option label {
+      margin-left: 8px;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+
+    .option:hover label {
+      color: #ff784e;
+    }
+
+    .font-size {
+      font-size: 16px;
+      color: #FF5722;
+      text-shadow: 0 0 5px #FF5722;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #FF5722;
+      color: #fff;
+      padding: 1rem 1.5rem;
+      text-decoration: none;
+      border-radius: 10px;
+      width: 220px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.7);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #ff784e;
+      box-shadow: 0 0 15px rgba(255, 87, 34, 0.9);
+    }
+
+    .labl {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #1e1e1e;
+      color: #FF5722;
+      border: 2px solid #FF5722;
+      border-radius: 10px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .labl:hover {
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.8);
+      border-color: #ff784e;
+    }
+
+    input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      background-color: #1e1e1e;
+      border: 2px solid #FF5722;
+      border-radius: 4px;
+      cursor: pointer;
+      vertical-align: middle;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      margin-right: 8px;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: #FF5722;
+      box-shadow: 0 0 10px #FF5722;
+    }
+
+    input[type="color"] {
+      background: none;
+      border: 2px solid #FF5722;
+      border-radius: 8px;
+      padding: 5px;
+      width: 100%;
+      margin-top: 8px;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    input[type="color"]:hover {
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.8);
+      border-color: #ff784e;
+    }
+
+    select.labl {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: #1e1e1e;
+      color: #FF5722;
+      padding: 10px;
+      border: 2px solid #FF5722;
+      border-radius: 10px;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 8px;
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    select.labl:hover {
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.8);
+      border-color: #ff784e;
+    }
+  </style>
+</head>
+<body>
+  <h4 class="font-size">Версия 2.0<br>by @Kostykevich</h4>
+
+  <form action="https://docs.google.com/document/d/1Z4HXHgg2P4z-EZ_wFOPToU2l9zyO6xMJ62OAGNj-FbM/edit?usp=drive_link" target="_blank">
+    <button class="btn">Инструкция по использованию</button>
+  </form>
+
+  <br>
+
+  <a class="option">Настройки</a>
+
+  <br><br>
+
+  <button id="openSettings" class="btn">Настройки кнопок</button>
+
+  <div class="option">
+    <input type="checkbox" id="showButtonsOnPage">
+    <label for="showButtonsOnPage">Показывать кнопки на странице</label>
+  </div>
+
+  <div class="option">
+    <input type="checkbox" id="autoClose">
+    <label for="autoClose">Авто закрытие жалобы</label>
+  </div>
+
+  <div class="option">
+    <input type="checkbox" id="autoSend">
+    <label for="autoSend">Авто отправка сообщения</label>
+  </div>
+
+  <div class="option">
+    <label for="fontSelect">Выберите шрифт:</label><br>
+    <select class="labl" id="fontSelect">
+      <option value="Arial">Arial</option>
+      <option value="Book Antiqua">Book Antiqua</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Tahoma">Tahoma</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Trebuchet MS">Trebuchet MS</option>
+      <option value="Verdana">Verdana</option>
+    </select>
+  </div>
+
+  <div class="option">
+    <label for="fontSizeSelect">Выберите размер шрифта:</label><br>
+    <input class="labl" type="number" id="fontSizeSelect" value="16" min="10" max="36">
+  </div>
+
+  <div class="option">
+    <label for="primaryColor">Цвет текста для форматирования</label><br>
+    <input type="color" id="primaryColor" value="#FF5733">
+  </div>
+
+  <div class="option">
+    <label for="statusColor">"Закрыто." и "Открыто."</label><br>
+    <input type="color" id="statusColor" value="#28B463">
+  </div>
+
+  <div class="option">
+    <label for="editColor">"На редактирование 12 часов."</label><br>
+    <input type="color" id="editColor" value="#3498DB">
+  </div>
+
+  <!-- Новые опции: положение текста, жирный, курсив -->
+  <div class="option">
+    <label for="textAlign">Положение текста:</label><br>
+    <select class="labl" id="textAlign">
+      <option value="left">Слева</option>
+      <option value="center">По центру</option>
+      <option value="right">Справа</option>
+    </select>
+  </div>
+
+  <div class="option">
+    <input type="checkbox" id="boldText">
+    <label for="boldText">Жирный текст</label>
+  </div>
+
+  <div class="option">
+    <input type="checkbox" id="italicText">
+    <label for="italicText">Курсив</label>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

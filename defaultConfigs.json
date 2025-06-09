@@ -1,0 +1,368 @@
+{
+	"criminal": [
+		{
+			"label": "Будет наказан",
+			"text1": "Игрок будет наказан.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Будут наказаны",
+			"text1": "Игроки будут наказаны.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Жалоба не по форме",
+			"text1": "Жалоба оформлена не по форме.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Не полный откат",
+			"text1": "Откат не полный.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Нет нарушений",
+			"text1": "Нет нарушений.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Открыть жалобу",
+			"text1": "",
+			"text2": "Открыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Закрыть жалобу",
+			"text1": "",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "На рассмотрении",
+			"text1": "На рассмотрении",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": true
+		}
+	],
+	"state": [
+		{
+			"label": "Будет наказан",
+			"text1": "Игрок будет наказан.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Будут наказаны",
+			"text1": "Игроки будут наказаны.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Жалоба не по форме",
+			"text1": "Жалоба оформлена не по форме.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Не полный откат",
+			"text1": "Откат не полный.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Нет нарушений",
+			"text1": "Нет нарушений.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Открыть жалобу",
+			"text1": "",
+			"text2": "Открыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Закрыть жалобу",
+			"text1": "",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "На рассмотрении",
+			"text1": "На рассмотрении",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": true
+		}
+	],
+	"nonFactional": [
+		{
+			"label": "Будет наказан",
+			"text1": "Игрок будет наказан.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Будут наказаны",
+			"text1": "Игроки будут наказаны.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Жалоба не по форме",
+			"text1": "Жалоба оформлена не по форме.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Не полный откат",
+			"text1": "Откат не полный.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Нет нарушений",
+			"text1": "Нет нарушений.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Открыть жалобу",
+			"text1": "",
+			"text2": "Открыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Закрыть жалобу",
+			"text1": "",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "На рассмотрении",
+			"text1": "На рассмотрении",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": true
+		}
+	],
+	"admin": [
+		{
+			"label": "Были наказаны по этой жалобе",
+			"text1": "",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": false,
+			"action": "openLinkDialog"
+		},
+		{
+			"label": "Ожидайте ответа ГА/зГА",
+			"text1": "",
+			"text2": "Ожидайте ответа ГА/зГА.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Передам администратору",
+			"text1": "Передам администратору.",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Жалоба не по форме",
+			"text1": "Жалоба оформлена не по форме.",
+			"text2": "",
+			"text3": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"color3": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Будет проведена беседа с администратором",
+			"text1": "Будет проведена беседа с администратором.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Открыть жалобу",
+			"text1": "",
+			"text2": "Открыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Закрыть жалобу",
+			"text1": "",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Ответ",
+			"text1": "Здравствуйте уважаемый игрок.",
+			"text2": "TEXT",
+			"text3": "Ожидайте ответа ГА/зГА.",
+			"color1": "primaryColor",
+			"color2": "primaryColor",
+			"color3": "statusColor",
+			"shouldClose": false,
+			"shouldSend": false
+		}
+	],
+	"discord": [
+		{
+			"label": "Разбаню",
+			"text1": "Разбаню.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Сниму мут",
+			"text1": "Сниму мут.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Отказано",
+			"text1": "В амнистии отказано.",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Не по форме",
+			"text1": "Не по форме.",
+			"text2": "На редактирование 12 часов.",
+			"color1": "primaryColor",
+			"color2": "editColor",
+			"shouldClose": false,
+			"shouldSend": true
+		},
+		{
+			"label": "Открыть жалобу",
+			"text1": "",
+			"text2": "Открыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "Закрыть жалобу",
+			"text1": "",
+			"text2": "Закрыто.",
+			"color1": "primaryColor",
+			"color2": "statusColor",
+			"shouldClose": true,
+			"shouldSend": true
+		},
+		{
+			"label": "На рассмотрении",
+			"text1": "На рассмотрении",
+			"color1": "primaryColor",
+			"shouldClose": false,
+			"shouldSend": true
+		}
+	]
+}

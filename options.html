@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <!-- CSP: скрипты только из себя -->
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Настройки кнопок</title>
+  <style>
+    body {
+      background: #121212;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h2 {
+      color: #FF5722;
+      margin-bottom: 10px;
+    }
+    select, input[type="text"], input[type="number"], input[type="color"], input[type="checkbox"], label, button {
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .type-selector {
+      margin-bottom: 20px;
+    }
+    .type-selector select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background: #1e1e1e;
+      color: #FF5722;
+      border: 2px solid #FF5722;
+      border-radius: 6px;
+    }
+    .type-selector select:hover {
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.7);
+      border-color: #ff784e;
+    }
+
+    /* Контейнеры для левой и правой колонок */
+    .columns-wrapper {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .column {
+      flex: 1;
+    }
+    .column h3 {
+      margin: 0 0 8px 0;
+      color: #FF5722;
+      font-size: 18px;
+    }
+    /* Контейнер “диалоговых” кнопок в настройках */
+    #leftDialogButtons,
+    #rightDialogButtons {
+      background: #1e1e1e;
+      padding: 12px;
+      border-radius: 6px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    /* Внутри “левого контейнера” каждая строка будет flex’ом */
+    .config-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .config-row button.main-btn {
+      background-color: #FF5722;
+      color: #FFFFFF;
+      border: 2px solid #FF5722;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      margin-right: 8px;
+      cursor: pointer;
+      flex: 1;
+    }
+    .config-row button.main-btn:hover {
+      background-color: #ff784e;
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.7);
+    }
+    .config-row button.small-btn {
+      background: #333;
+      color: #FFF;
+      border: 1px solid #555;
+      border-radius: 4px;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      margin-left: 4px;
+      cursor: pointer;
+      flex: none;
+    }
+    .config-row button.small-btn:hover {
+      background: #444;
+      box-shadow: 0 0 6px rgba(255,255,255,0.2);
+    }
+
+    /* Кнопка «Добавить новую кнопку» */
+    #addButton {
+      background: #28B463;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #addButton:hover {
+      background: #45c36f;
+      box-shadow: 0 0 8px rgba(40, 180, 99, 0.7);
+    }
+
+    /* Форма редактирования одной кнопки */
+    #editorContainer {
+      display: none;
+      border: 2px solid #FF5722;
+      border-radius: 6px;
+      padding: 15px;
+      background: #1e1e1e;
+      margin-bottom: 20px;
+    }
+    #editorContainer h3 {
+      margin-top: 0;
+      color: #ff784e;
+    }
+    .editor-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .editor-field {
+      flex: 1 1 45%;
+      display: flex;
+      flex-direction: column;
+    }
+    .editor-field label {
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+    .editor-field input[type="text"],
+    .editor-field input[type="color"],
+    .editor-field input[type="number"],
+    .editor-field select {
+      padding: 8px;
+      font-size: 14px;
+      background: #292e39;
+      color: #e0e0e0;
+      border: 1px solid #FF5722;
+      border-radius: 4px;
+    }
+    .editor-field input[type="text"]:hover,
+    .editor-field select:hover,
+    .editor-field input[type="color"]:hover,
+    .editor-field input[type="number"]:hover {
+      box-shadow: 0 0 8px rgba(255, 87, 34, 0.7);
+      border-color: #ff784e;
+    }
+    .editor-field input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      background: #1e1e1e;
+      border: 2px solid #FF5722;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+    .editor-field input[type="checkbox"]:checked {
+      background: #FF5722;
+      box-shadow: 0 0 8px #FF5722;
+    }
+    .editor-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .editor-actions button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #saveButton {
+      background: #28B463;
+      color: #fff;
+    }
+    #saveButton:hover {
+      background: #45c36f;
+      box-shadow: 0 0 8px rgba(40, 180, 99, 0.7);
+    }
+    #cancelButton {
+      background: #E74C3C;
+      color: #fff;
+    }
+    #cancelButton:hover {
+      background: #ff5757;
+      box-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+    }
+
+    /* Экспорт/Импорт */
+    #exportButton, #importButton {
+      display: inline-block;
+      background: #3498DB;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right: 10px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    #exportButton:hover, #importButton:hover {
+      background: #5dade2;
+      box-shadow: 0 0 8px rgba(52, 152, 219, 0.7);
+    }
+    #fileInput {
+      display: none;
+    }
+    #status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #28B463;
+    }
+
+    /* ================================
+       Блок «Настройки внешнего вида»
+       ================================ */
+    #styleButton {
+      background: #9B59B6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    #styleButton:hover {
+      background: #af7ac5;
+      box-shadow: 0 0 8px rgba(155, 89, 182, 0.7);
+    }
+    #styleEditorContainer {
+      display: none;
+      border: 2px solid #9B59B6;
+      border-radius: 6px;
+      padding: 15px;
+      background: #1e1e1e;
+      margin-bottom: 20px;
+    }
+    #styleEditorContainer h3 {
+      margin-top: 0;
+      color: #af7ac5;
+    }
+    .style-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 12px;
+    }
+    .style-row label {
+      flex: 0 0 160px;
+      font-size: 14px;
+      color: #e0e0e0;
+    }
+    .style-row select,
+    .style-row input[type="color"],
+    .style-row input[type="number"] {
+      flex: 1;
+      padding: 6px;
+      background: #292e39;
+      color: #e0e0e0;
+      border: 1px solid #FF5722;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .style-row input[type="color"] {
+      height: 36px;
+    }
+    .color-value {
+      margin-left: 8px;
+      min-width: 70px;
+      font-family: monospace;
+      color: #e0e0e0;
+    }
+    .style-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .style-actions button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #saveStyleButton {
+      background: #9B59B6;
+      color: #fff;
+    }
+    #saveStyleButton:hover {
+      background: #af7ac5;
+      box-shadow: 0 0 8px rgba(155, 89, 182, 0.7);
+    }
+    #cancelStyleButton {
+      background: #E74C3C;
+      color: #fff;
+    }
+    #cancelStyleButton:hover {
+      background: #ff5757;
+      box-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+    }
+  </style>
+</head>
+<body>
+  <h2>Настройки кнопок по типу жалоб</h2>
+
+  <!-- 1) Выбор типа жалобы -->
+  <div class="type-selector">
+    <label for="complaintTypeSelect">Выберите тип жалобы:</label>
+    <select id="complaintTypeSelect">
+      <option value="criminal">Жалобы на игроков криминальных структур</option>
+      <option value="state">Жалобы на государственных служащих</option>
+      <option value="nonFactional">Жалобы на нефракционных игроков</option>
+      <option value="admin">Жалобы на администрацию</option>
+      <option value="discord">Разбан в дискорде</option>
+    </select>
+  </div>
+
+  <!-- 2) Блок «Настройки внешнего вида» -->
+  <h3>Внешний вид кнопок</h3>
+  <button id="styleButton">Настроить внешний вид кнопок</button>
+  <div id="styleEditorContainer">
+    <h3>Настройки внешнего вида кнопок</h3>
+
+    <div class="style-row">
+      <label for="stylePrimaryColor">Фон кнопки:</label>
+      <input type="color" id="stylePrimaryColor" value="#FF5722">
+      <span class="color-value" id="valPrimaryColor">#FF5722</span>
+    </div>
+    <div class="style-row">
+      <label for="styleStatusColor">Цвет текста:</label>
+      <input type="color" id="styleStatusColor" value="#FFFFFF">
+      <span class="color-value" id="valStatusColor">#FFFFFF</span>
+    </div>
+    <div class="style-row">
+      <label for="styleEditColor">Цвет для “edit” действий:</label>
+      <input type="color" id="styleEditColor" value="#FFA500">
+      <span class="color-value" id="valEditColor">#FFA500</span>
+    </div>
+
+    <div class="style-row">
+      <label for="styleFont">Шрифт:</label>
+      <select id="styleFont">
+        <option value="Arial, sans-serif">Arial, sans-serif</option>
+        <option value="Verdana, sans-serif">Verdana, sans-serif</option>
+        <option value="Tahoma, sans-serif">Tahoma, sans-serif</option>
+        <option value="Trebuchet MS, sans-serif">Trebuchet MS, sans-serif</option>
+        <option value="Georgia, serif">Georgia, serif</option>
+        <option value="Times New Roman, serif">Times New Roman, serif</option>
+      </select>
+    </div>
+
+    <div class="style-row">
+      <label for="styleFontSize">Размер шрифта (px):</label>
+      <input type="number" id="styleFontSize" placeholder="16">
+    </div>
+
+    <div class="style-row">
+      <label>Стиль шрифта:</label>
+      <div style="display:flex; gap:20px;">
+        <label><input type="checkbox" id="styleBold"> Жирный</label>
+        <label><input type="checkbox" id="styleItalic"> Курсив</label>
+      </div>
+    </div>
+
+    <div class="style-row">
+      <label for="styleWidth">Ширина кнопки (px):</label>
+      <input type="number" id="styleWidth" placeholder="auto">
+    </div>
+    <div class="style-row">
+      <label for="styleHeight">Высота кнопки (px):</label>
+      <input type="number" id="styleHeight" placeholder="auto">
+    </div>
+    <div class="style-row">
+      <label for="styleBorderRadius">Скругление (px):</label>
+      <input type="number" id="styleBorderRadius" placeholder="6">
+    </div>
+    <div class="style-row">
+      <label for="stylePadding">Padding (например: "10px 15px"):</label>
+      <input type="text" id="stylePadding" placeholder="10px 15px">
+    </div>
+
+    <div class="style-actions">
+      <button id="saveStyleButton">Сохранить стиль</button>
+      <button id="cancelStyleButton">Отмена</button>
+    </div>
+  </div>
+
+  <!-- 3) Контейнеры для левой и правой колонок -->
+  <div class="columns-wrapper">
+    <div class="column">
+      <h3>Левая колонка (из JSON-настроек)</h3>
+      <div id="leftDialogButtons"></div>
+    </div>
+    <div class="column">
+      <h3>Правая колонка (статические кнопки)</h3>
+      <div id="rightDialogButtons"></div>
+    </div>
+  </div>
+
+  <!-- 4) Кнопка “+ Добавить кнопку” и форма редактирования -->
+  <button id="addButton">+ Добавить кнопку</button>
+
+  <div id="editorContainer">
+    <h3>Редактирование кнопки</h3>
+    <div class="editor-row">
+      <div class="editor-field">
+        <label for="editLabel">Label (текст кнопки):</label>
+        <input type="text" id="editLabel" placeholder="Например: 'Открыть жалобу'">
+      </div>
+      <div class="editor-field">
+        <label for="editColor1">Цвет color1 (HEX):</label>
+        <input type="color" id="editColor1" value="#FF5722">
+        <span class="color-value" id="valColor1">#FF5722</span>
+      </div>
+    </div>
+    <div class="editor-row">
+      <div class="editor-field">
+        <label for="editText1">text1 (основной текст):</label>
+        <input type="text" id="editText1" placeholder="Например: 'Игрок будет наказан.'">
+      </div>
+      <div class="editor-field">
+        <label for="editColor2">Цвет color2 (HEX):</label>
+        <input type="color" id="editColor2" value="#F1E207">
+        <span class="color-value" id="valColor2">#F1E207</span>
+      </div>
+    </div>
+    <div class="editor-row">
+      <div class="editor-field">
+        <label for="editText2">text2 (второй текст):</label>
+        <input type="text" id="editText2" placeholder="Например: 'Закрыто.'">
+      </div>
+      <div class="editor-field">
+        <label for="editColor3">Цвет color3 (HEX):</label>
+        <input type="color" id="editColor3" value="#FFA500">
+        <span class="color-value" id="valColor3">#FFA500</span>
+      </div>
+    </div>
+    <div class="editor-row">
+      <div class="editor-field">
+        <label for="editText3">text3 (третий текст, опционально):</label>
+        <input type="text" id="editText3" placeholder="Например: 'На редактирование 12 часов.'">
+      </div>
+      <div class="editor-field">
+        <label for="editAction">Action:</label>
+        <select id="editAction">
+          <option value="none">none</option>
+          <option value="openLinkDialog">Добавление ссылки</option>
+        </select>
+      </div>
+    </div>
+    <div class="editor-row">
+      <div class="editor-field">
+        <label>
+          <input type="checkbox" id="editShouldClose"> shouldClose
+        </label>
+      </div>
+      <div class="editor-field">
+        <label>
+          <input type="checkbox" id="editShouldSend"> shouldSend
+        </label>
+      </div>
+    </div>
+    <div class="editor-actions">
+      <button id="saveButton">Сохранить</button>
+      <button id="cancelButton">Отмена</button>
+    </div>
+  </div>
+
+  <hr style="border-color:#FF5722; margin: 20px 0;">
+
+  <!-- 5) Экспорт/Импорт всей конфигурации -->
+  <button id="exportButton">Экспортировать в JSON</button>
+  <button id="importButton">Импортировать из JSON</button>
+  <input type="file" id="fileInput" accept=".json">
+  <div id="status"></div>
+
+  <!-- Подключаем JS вне инлайна (чтобы CSP не мешал) -->
+  <script src="options.js"></script>
+</body>
+</html>

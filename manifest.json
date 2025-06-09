@@ -1,0 +1,30 @@
+{
+	"manifest_version": 3,
+	"name": "Forum Helper",
+	"version": "2.0",
+	"description": "Вспомогательное расширение для форума.\nРаботает только на форуме Radmir Мой Дом. \nСоздатель by @Kostykevich",
+	"permissions": ["storage", "activeTab", "scripting"],
+	"host_permissions": ["*://forum.gtadom.com/*"],
+	"icons": {
+		"16": "logo123.png",
+		"48": "logo123.png",
+		"128": "logo123.png"
+	},
+	"background": {
+		"service_worker": "background.js"
+	},
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": "logo123.png"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
+	"content_scripts": [
+		{
+			"matches": ["*://forum.gtadom.com/*"],
+			"js": ["content.js"]
+		}
+	]
+}
