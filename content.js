@@ -533,11 +533,11 @@ window.addEventListener('load', () => {
 				function closeCurrent() {
 					if (current.container) {
 						current.container.style.display = 'none'
-						current.button.style.backgroundColor = btnBg
-						current.button.style.borderColor = btnBg
+						current.button.style.backgroundColor = baseColor // исправлено
+						current.button.style.borderColor = borderColor // исправлено
 						current = { button: null, container: null }
 					}
-				}
+				}				
 
 				// обработчик кликов вне кнопок и контейнеров
 				document.addEventListener('click', e => {
@@ -569,18 +569,18 @@ window.addEventListener('load', () => {
 				].forEach(({ button, container }) => {
 					// hover
 					button.addEventListener('mouseover', () => {
-						button.style.backgroundColor = btnHover
-						button.style.borderColor = btnHover
+						button.style.backgroundColor = hoverBgColor // исправлено
+						button.style.borderColor = hoverBgColor // исправлено
 					})
 					button.addEventListener('mouseout', () => {
 						if (container.style.display === 'flex') {
 							button.style.backgroundColor = dropdownBgColor
 							button.style.borderColor = dropdownBgColor
 						} else {
-							button.style.backgroundColor = btnBg
-							button.style.borderColor = btnBg
+							button.style.backgroundColor = baseColor // исправлено
+							button.style.borderColor = borderColor // исправлено
 						}
-					})
+					})					
 
 					// click
 					button.addEventListener('click', e => {
