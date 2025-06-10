@@ -1,8 +1,5 @@
 <<<<<<< HEAD
 # Forum Helper Chrome Extension v2.2
-=======
-# Forum Helper Chrome Extension v2.11
->>>>>>> 997d746e9ed691e87118cdd44dc56dfd96182dca
 
 **A lightweight assistant for the Radmir «Мой Дом» forum, developed by @Kostykevich.**
 
