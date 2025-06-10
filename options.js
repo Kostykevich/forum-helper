@@ -83,8 +83,8 @@ function renderDialogButtons(container, configs) {
 			'buttonEditColor',
 			'buttonBorderRadius',
 			'buttonPadding',
-			'selectedFont',
-			'selectedFontSize',
+			'selectedFontBTN',
+			'selectedFontBTNSize',
 			'buttonWidth',
 			'buttonHeight',
 			'buttonBold',
@@ -97,8 +97,8 @@ function renderDialogButtons(container, configs) {
 			const editColor = data.buttonEditColor || '#FFA500'
 			const borderRadius = data.buttonBorderRadius || '6px'
 			const paddingVal = data.buttonPadding || '10px 15px'
-			const fontFamily = data.selectedFont || 'Arial, sans-serif'
-			const fontSizePx = data.selectedFontSize || '16'
+			const fontFamily = data.selectedFontBTN || 'Arial, sans-serif'
+			const fontSizePx = data.selectedFontBTNSize || '16'
 			const widthVal = data.buttonWidth || 'auto'
 			const heightVal = data.buttonHeight || 'auto'
 			const boldOn = data.buttonBold || false
@@ -324,10 +324,16 @@ function insertFormattedText(
 
 	// Читаем шрифты и выравнивание из хранилища (если нужно)
 	chrome.storage.sync.get(
-		['selectedFont', 'selectedFontSize', 'textAlign', 'boldText', 'italicText'],
+		[
+			'selectedFontBTN',
+			'selectedFontBTNSize',
+			'textAlign',
+			'boldText',
+			'italicText',
+		],
 		data => {
-			const font = data.selectedFont || 'Arial, sans-serif'
-			const size = data.selectedFontSize || '16'
+			const font = data.selectedFontBTN || 'Arial, sans-serif'
+			const size = data.selectedFontBTNSize || '16'
 			const align = data.textAlign || 'left'
 			const isBold = data.boldText === true
 			const isItalic = data.italicText === true
@@ -618,8 +624,8 @@ styleButton.addEventListener('click', () => {
 			'buttonEditColor',
 			'buttonBorderRadius',
 			'buttonPadding',
-			'selectedFont',
-			'selectedFontSize',
+			'selectedFontBTN',
+			'selectedFontBTNSize',
 			'buttonWidth',
 			'buttonHeight',
 			'buttonBold',
@@ -638,11 +644,11 @@ styleButton.addEventListener('click', () => {
 				styleEditColor.value = data.buttonEditColor
 				valEditColor.textContent = data.buttonEditColor
 			}
-			if (data.selectedFont) {
-				styleFont.value = data.selectedFont
+			if (data.selectedFontBTN) {
+				styleFont.value = data.selectedFontBTN
 			}
-			if (data.selectedFontSize) {
-				styleFontSize.value = data.selectedFontSize
+			if (data.selectedFontBTNSize) {
+				styleFontSize.value = data.selectedFontBTNSize
 			}
 			if (data.buttonBorderRadius) {
 				// Если хранилось с 'px', убираем при показе
@@ -720,8 +726,8 @@ saveStyleButton.addEventListener('click', () => {
 			buttonEditColor: editColor,
 			buttonBorderRadius: borderRadiusValue,
 			buttonPadding: paddingValue,
-			selectedFont: fontFamilyValue,
-			selectedFontSize: fontSizeValue,
+			selectedFontBTN: fontFamilyValue,
+			selectedFontBTNSize: fontSizeValue,
 			buttonWidth: widthValue,
 			buttonHeight: heightValue,
 			buttonBold: boldOn,

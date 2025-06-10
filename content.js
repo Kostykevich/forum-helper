@@ -93,9 +93,7 @@ window.addEventListener('load', () => {
 		const btn = document.createElement('button')
 		btn.textContent = text
 		btn.classList.add('custom-btn')
-
-		// Добавляем внешний отступ между кнопками
-		btn.style.marginBottom = '12px' // можно настроить
+		btn.style.marginBottom = '12px' // отступ между кнопками
 
 		chrome.storage.sync.get(
 			[
@@ -103,8 +101,8 @@ window.addEventListener('load', () => {
 				'buttonTextColor',
 				'buttonBorderRadius',
 				'buttonPadding',
-				'selectedFont',
-				'selectedFontSize',
+				'selectedFontBTN',
+				'selectedFontBTNSize',
 				'buttonWidth',
 				'buttonHeight',
 				'buttonBold',
@@ -115,17 +113,22 @@ window.addEventListener('load', () => {
 				const textColor = data.buttonTextColor || '#FFFFFF'
 				const borderRadius = data.buttonBorderRadius || '6px'
 				const paddingVal = data.buttonPadding || '10px 15px'
-				const fontFamily = data.selectedFont || 'Arial, sans-serif'
-				const fontSizePx = (data.selectedFontSize || 16) + 'px'
+				const fontFamily = data.selectedFontBTN || 'Arial, sans-serif'
+				const fontSizePx = (data.selectedFontBTNSize || 15) + 'px'
 				const widthVal = data.buttonWidth ? data.buttonWidth + 'px' : 'auto'
 				const heightVal = data.buttonHeight ? data.buttonHeight + 'px' : 'auto'
 				const boldOn = !!data.buttonBold
 				const italicOn = !!data.buttonItalic
 
-				// Применяем стили
+				// Немного затемнённый цвет для рамки (на 10%)
+				const borderColor = darkenColor(bgColor, 0.15)
+				// Цвет для hover (на 20%)
+				const hoverColor = darkenColor(bgColor, 0.2)
+
+				// Применяем основные стили
 				btn.style.backgroundColor = bgColor
 				btn.style.color = textColor
-				btn.style.border = `2px solid ${bgColor}`
+				btn.style.border = `3px solid ${borderColor}`
 				btn.style.borderRadius = borderRadius
 				btn.style.padding = paddingVal
 				btn.style.fontFamily = fontFamily
@@ -135,16 +138,13 @@ window.addEventListener('load', () => {
 				btn.style.fontWeight = boldOn ? 'bold' : 'normal'
 				btn.style.fontStyle = italicOn ? 'italic' : 'normal'
 
-				// Вычисляем чуть более тёмный цвет для hover
-				const hoverColor = darkenColor(bgColor, 0.2)
-
 				btn.addEventListener('mouseover', () => {
 					btn.style.backgroundColor = hoverColor
 					btn.style.borderColor = hoverColor
 				})
 				btn.addEventListener('mouseout', () => {
 					btn.style.backgroundColor = bgColor
-					btn.style.borderColor = bgColor
+					btn.style.borderColor = borderColor
 				})
 			}
 		)
@@ -152,6 +152,7 @@ window.addEventListener('load', () => {
 		btn.addEventListener('click', onClick)
 		return btn
 	}
+	  
   
 
 	const insertText = text => {
@@ -195,7 +196,7 @@ window.addEventListener('load', () => {
 			],
 			data => {
 				const selectedFont = data.selectedFont || 'Arial'
-				const selectedFontSize = data.selectedFontSize || '16'
+				const selectedFontSize = data.selectedFontSize || '15'
 				const textAlign = data.textAlign || 'left'
 				const isBold = data.boldText === true
 				const isItalic = data.italicText === true
@@ -398,128 +399,101 @@ window.addEventListener('load', () => {
 			
 
     const createAllButtonsR = rootContainer => {
-			chrome.storage.sync.get([
-				'buttonBgColor',
-				'buttonBold',
-				'buttonItalic',
-			], data => {
-				const baseColor = data.buttonBgColor || '#FF5722'
-
-				// простая функция, которая затемняет HEX-цвет на заданный процент
-				function darkenColor(hex, percent) {
-					// убираем «#», если он есть
-					hex = hex.replace(/^#/, '')
-					// если короткий формат (e.g. "F52"), приводим к полному
-					if (hex.length === 3) {
-						hex = hex
-							.split('')
-							.map(ch => ch + ch)
-							.join('')
-					}
-					const num = parseInt(hex, 16)
-					const r = (num >> 16) & 0xff
-					const g = (num >> 8) & 0xff
-					const b = num & 0xff
-
-					// уменьшаем каждый канал на percent%
-					const newR = Math.max(
-						0,
-						Math.min(255, Math.floor(r * (1 - percent / 100)))
-					)
-					const newG = Math.max(
-						0,
-						Math.min(255, Math.floor(g * (1 - percent / 100)))
-					)
-					const newB = Math.max(
-						0,
-						Math.min(255, Math.floor(b * (1 - percent / 100)))
-					)
-
-					// возвращаем обратно строку вида "#RRGGBB"
-					return (
-						'#' +
-						((1 << 24) | (newR << 16) | (newG << 8) | newB)
-							.toString(16)
-							.slice(1)
-					)
-				}
-
-				const boldOn = !!data.buttonBold
-				const italicOn = !!data.buttonItalic
-
-				const btnBg = baseColor
-				const btnHover = darkenColor(baseColor, 20)
-				const dropdownBgColor = darkenColor(btnHover, 20)
-				const ddBgColor = darkenColor(btnHover, 20)
-
-				// 1) создаём и прописываем главные кнопки
-				const mainButton_mute = document.createElement('button')
-				mainButton_mute.innerText = 'Mute'
-				mainButton_mute.style.padding = '10px 15px'
-				mainButton_mute.style.backgroundColor = baseColor
-				mainButton_mute.style.color = 'white'
-				mainButton_mute.style.border = '2px solid ' + baseColor
-				mainButton_mute.style.borderRadius = '10px'
-				mainButton_mute.style.cursor = 'pointer'
-				mainButton_mute.style.fontSize = '16px'
-				mainButton_mute.style.marginBottom = '10px'
-				mainButton_mute.style.position = 'relative'
-				mainButton_mute.style.fontWeight = boldOn ? 'bold' : 'normal'
-				mainButton_mute.style.fontStyle = italicOn ? 'italic' : 'normal'
-				rootContainer.appendChild(mainButton_mute)
-
-				const mainButton_ajail = document.createElement('button')
-				mainButton_ajail.innerText = 'Ajail'
-				mainButton_ajail.style.padding = '10px 15px'
-				mainButton_ajail.style.backgroundColor = baseColor
-				mainButton_ajail.style.color = 'white'
-				mainButton_ajail.style.border = '2px solid ' + baseColor
-				mainButton_ajail.style.borderRadius = '10px'
-				mainButton_ajail.style.cursor = 'pointer'
-				mainButton_ajail.style.fontSize = '16px'
-				mainButton_ajail.style.marginBottom = '10px'
-				mainButton_ajail.style.position = 'relative'
-				mainButton_ajail.style.fontWeight = boldOn ? 'bold' : 'normal'
-				mainButton_ajail.style.fontStyle = italicOn ? 'italic' : 'normal'
-				rootContainer.appendChild(mainButton_ajail)
-
-				const mainButton_ban = document.createElement('button')
-				mainButton_ban.innerText = 'Ban'
-				mainButton_ban.style.padding = '10px 15px'
-				mainButton_ban.style.backgroundColor = baseColor
-				mainButton_ban.style.color = 'white'
-				mainButton_ban.style.border = '2px solid ' + baseColor
-				mainButton_ban.style.borderRadius = '10px'
-				mainButton_ban.style.cursor = 'pointer'
-				mainButton_ban.style.fontSize = '16px'
-				mainButton_ban.style.marginBottom = '10px'
-				mainButton_ban.style.position = 'relative'
-				mainButton_ban.style.fontWeight = boldOn ? 'bold' : 'normal'
-				mainButton_ban.style.fontStyle = italicOn ? 'italic' : 'normal'
-				rootContainer.appendChild(mainButton_ban)
-
-				// 2) Функция для создания «дропдауна» под кнопкой, с фоном чуть темнее baseColor
-				function createStyledContainer(id, parentButton) {
-					const container = document.createElement('div')
-					container.id = id
-					container.style.position = 'absolute'
-					container.style.backgroundColor = dropdownBgColor // уже затемнённый фон
-					container.style.border = '2px solid ' + dropdownBgColor
-					container.style.borderRadius = '10px'
-					container.style.padding = '10px'
-					container.style.display = 'none'
-					container.style.flexDirection = 'column'
-					container.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'
-					container.style.zIndex = '1000'
-
-					const rect = parentButton.getBoundingClientRect()
-					container.style.width = rect.width + 'px'
-					container.style.top = rect.bottom + window.scrollY + 'px'
-					container.style.left = rect.left + window.scrollX + 'px'
-
-					document.body.appendChild(container)
-					return container
-				}
+		chrome.storage.sync.get(
+		  [
+			'buttonBgColor',
+			'buttonBold',
+			'buttonItalic',
+		  ],
+		  data => {
+			const baseColor = data.buttonBgColor || '#FF5722';
+			const boldOn    = !!data.buttonBold;
+			const italicOn  = !!data.buttonItalic;
+	  
+			// Функция затемнения HEX-цвета на заданный процент
+			function darkenColor(hex, percent) {
+			  hex = hex.replace(/^#/, '');
+			  if (hex.length === 3) {
+				hex = hex.split('').map(ch => ch + ch).join('');
+			  }
+			  const num = parseInt(hex, 16);
+			  const r = (num >> 16) & 0xff;
+			  const g = (num >> 8) & 0xff;
+			  const b = num & 0xff;
+			  const newR = Math.max(0, Math.min(255, Math.floor(r * (1 - percent / 100))));
+			  const newG = Math.max(0, Math.min(255, Math.floor(g * (1 - percent / 100))));
+			  const newB = Math.max(0, Math.min(255, Math.floor(b * (1 - percent / 100))));
+			  return (
+				'#' +
+				((1 << 24) | (newR << 16) | (newG << 8) | newB)
+				  .toString(16)
+				  .slice(1)
+			  );
+			}
+	  
+			const borderColor   = darkenColor(baseColor, 10);  // рамка на 10% темнее
+			const hoverBgColor  = darkenColor(baseColor, 20);  // фон при hover на 20% темнее
+			const dropdownBgColor = darkenColor(hoverBgColor, 20);
+	  
+			// Общая функция создания кнопок
+			function makeButton(label) {
+			  const btn = document.createElement('button');
+			  btn.innerText = label;
+			  btn.style.padding       = '10px 15px';
+			  btn.style.backgroundColor = baseColor;
+			  btn.style.color         = 'white';
+			  btn.style.border        = `2px solid ${borderColor}`;
+			  btn.style.borderRadius  = '10px';
+			  btn.style.cursor        = 'pointer';
+			  btn.style.fontSize      = '16px';
+			  btn.style.marginBottom  = '10px';
+			  btn.style.position      = 'relative';
+			  btn.style.fontWeight    = boldOn   ? 'bold'   : 'normal';
+			  btn.style.fontStyle     = italicOn ? 'italic' : 'normal';
+	  
+			  btn.addEventListener('mouseover', () => {
+				btn.style.backgroundColor = hoverBgColor;
+				btn.style.borderColor     = hoverBgColor;
+			  });
+			  btn.addEventListener('mouseout', () => {
+				btn.style.backgroundColor = baseColor;
+				btn.style.borderColor     = borderColor;
+			  });
+	  
+			  return btn;
+			}
+	  
+			// 1) Создаём основные кнопки
+			const mainButton_mute = makeButton('Mute');
+			const mainButton_ajail = makeButton('Ajail');
+			const mainButton_ban  = makeButton('Ban');
+	  
+			rootContainer.appendChild(mainButton_mute);
+			rootContainer.appendChild(mainButton_ajail);
+			rootContainer.appendChild(mainButton_ban);
+	  
+			// 2) Функция создания дропдауна
+			function createStyledContainer(id, parentButton) {
+			  const container = document.createElement('div');
+			  container.id = id;
+			  container.style.position        = 'absolute';
+			  container.style.backgroundColor = dropdownBgColor;
+			  container.style.border          = `2px solid ${dropdownBgColor}`;
+			  container.style.borderRadius    = '10px';
+			  container.style.padding         = '10px';
+			  container.style.display         = 'none';
+			  container.style.flexDirection   = 'column';
+			  container.style.boxShadow       = '0 4px 10px rgba(0,0,0,0.1)';
+			  container.style.zIndex          = '1000';
+	  
+			  const rect = parentButton.getBoundingClientRect();
+			  container.style.width = `${rect.width}px`;
+			  container.style.top   = `${rect.bottom + window.scrollY}px`;
+			  container.style.left  = `${rect.left + window.scrollX}px`;
+	  
+			  document.body.appendChild(container);
+			  return container;
+			}
 
 				// 3) создаём три «дропдауна» сразу после того, как кнопки вставлены в DOM
 				const buttonContainer_mute = createStyledContainer(
@@ -1433,58 +1407,76 @@ window.addEventListener('load', () => {
 						'Форматировать текст',
 						() => {
 							chrome.storage.sync.get(
-								['selectedFont', 'selectedFontSize', 'primaryColor'],
-								data => {
+								[
+									'selectedFont',
+									'selectedFontSize',
+									'primaryColor',
+									'textAlign',
+								],
+								({
+									selectedFont,
+									selectedFontSize,
+									primaryColor,
+									textAlign,
+								}) => {
 									const editableDiv = document.querySelector(
 										'.fr-element.fr-view[contenteditable="true"]'
 									)
-									if (editableDiv) {
-										const selectedFont = data.selectedFont || 'Book Antiqua'
-										const selectedFontSize = data.selectedFontSize || '16px'
-										const primaryColor = data.primaryColor || '#ffffff'
-
-										// Получаем только текст без HTML
-										let rawText = editableDiv.innerText || ''
-
-										// Убираем лишние пробелы, табы и лишние символы
-										rawText = rawText
-											.replace(/\u00A0/g, ' ') // заменяем неразрывные пробелы на обычные
-											.replace(/\t+/g, ' ') // убираем табуляции
-											.replace(/ +/g, ' ') // убираем повторяющиеся пробелы
-											.replace(/ *\n */g, '\n') // убираем пробелы вокруг переносов строк
-											.trim() // убираем пробелы с начала и конца
-
-										const lines = rawText
-											.split(/\r?\n/)
-											.filter(line => line.length > 0)
-
-										if (lines.length === 0) {
-											alert('Нет текста для форматирования.')
-											return
-										}
-
-										const formattedHTML = lines
-											.map(
-												line => `
-                    <p style="text-align: center;">
-                        <strong><em>
-                            <span style="color: ${primaryColor}; font-size: ${selectedFontSize}px; font-family: '${selectedFont}'; font-weight: bold;">
-                                ${line}
-                            </span>
-                        </em></strong>
-                    </p>
-                `
-											)
-											.join('\n')
-
-										editableDiv.innerHTML = formattedHTML + '<p><br></p>'
+									if (!editableDiv) {
+										alert('Не найдено поле для редактирования.')
+										return
 									}
+
+									// Fallbacks
+									const fontFamily = selectedFont || 'Arial'
+									const fontSizeNumber = parseInt(selectedFontSize, 10) || 15
+									const color = primaryColor || '#ffffff'
+									const align = textAlign || 'left'
+
+									// Get raw text and normalize whitespace
+									let rawText = editableDiv.innerText || ''
+									rawText = rawText
+										.replace(/\u00A0/g, ' ')
+										.replace(/\t+/g, ' ')
+										.replace(/ +/g, ' ')
+										.replace(/ *\n */g, '\n')
+										.trim()
+
+									const lines = rawText
+										.split(/\r?\n/)
+										.filter(line => line.length > 0)
+									if (lines.length === 0) {
+										alert('Нет текста для форматирования.')
+										return
+									}
+
+									// Build the new HTML
+									const formattedHTML = lines
+										.map(
+											line => `
+					<p style="text-align: ${align}; margin: 0;">
+					  <strong><em>
+						<span style="
+						  color: ${color};
+						  font-size: ${fontSizeNumber}px;
+						  font-family: '${fontFamily}';
+						  font-weight: bold;
+						">
+						  ${line}
+						</span>
+					  </em></strong>
+					</p>`
+										)
+										.join('\n')
+
+									// Replace the contents
+									editableDiv.innerHTML = formattedHTML + '<p><br></p>'
 								}
 							)
 						},
 						'#FF5722'
 					)
-				)
+				)				  
 
 				rootContainer.appendChild(
 					createButton(
@@ -1614,46 +1606,70 @@ window.addEventListener('load', () => {
 				'Форматировать текст',
 				() => {
 					chrome.storage.sync.get(
-						['selectedFont', 'selectedFontSize', 'primaryColor'],
-						data => {
+						[
+							'selectedFont',
+							'selectedFontSize',
+							'primaryColor',
+							'textAlign',
+						],
+						({
+							selectedFont,
+							selectedFontSize,
+							primaryColor,
+							textAlign,
+						}) => {
 							const editableDiv = document.querySelector(
 								'.fr-element.fr-view[contenteditable="true"]'
 							)
-							if (editableDiv) {
-								const selectedFont = data.selectedFont || 'Book Antiqua'
-								const selectedFontSize = data.selectedFontSize || '16px'
-								const primaryColor = data.primaryColor || '#ffffff'
-
-								// Получаем только текст без HTML
-								let rawText = editableDiv.innerText || ''
-
-								// Убираем лишние пробелы, табы и лишние символы
-								rawText = rawText
-									.replace(/\u00A0/g, ' ') // заменяем неразрывные пробелы на обычные
-									.replace(/\t+/g, '') // убираем все табуляции
-									.replace(/ +/g, ' ') // убираем повторяющиеся пробелы
-									.replace(/ *\n */g, '\n') // убираем пробелы вокруг переносов строк
-									.trim() // убираем пробелы с начала и конца
-
-								const lines = rawText
-									.split(/\r?\n/)
-									.filter(line => line.length > 0)
-
-								if (lines.length === 0) {
-									alert('Нет текста для форматирования.')
-									return
-								}
-
-								// Формируем HTML без лишних пробелов и табуляций
-								const formattedHTML = lines
-									.map(
-										line =>
-											`<p style="text-align:center;"><strong><em><span style="color:${primaryColor};font-size:${selectedFontSize};font-family:'${selectedFont}';font-weight:bold;">${line}</span></em></strong></p>`
-									)
-									.join('')
-
-								editableDiv.innerHTML = formattedHTML + '<p><br></p>'
+							if (!editableDiv) {
+								alert('Не найдено поле для редактирования.')
+								return
 							}
+
+							// Fallbacks
+							const fontFamily = selectedFont || 'Arial'
+							const fontSizeNumber = parseInt(selectedFontSize, 10) || 15
+							const color = primaryColor || '#ffffff'
+							const align = textAlign || 'left'
+
+							// Get raw text and normalize whitespace
+							let rawText = editableDiv.innerText || ''
+							rawText = rawText
+								.replace(/\u00A0/g, ' ')
+								.replace(/\t+/g, ' ')
+								.replace(/ +/g, ' ')
+								.replace(/ *\n */g, '\n')
+								.trim()
+
+							const lines = rawText
+								.split(/\r?\n/)
+								.filter(line => line.length > 0)
+							if (lines.length === 0) {
+								alert('Нет текста для форматирования.')
+								return
+							}
+
+							// Build the new HTML
+							const formattedHTML = lines
+								.map(
+									line => `
+			<p style="text-align: ${align}; margin: 0;">
+			  <strong><em>
+				<span style="
+				  color: ${color};
+				  font-size: ${fontSizeNumber}px;
+				  font-family: '${fontFamily}';
+				  font-weight: bold;
+				">
+				  ${line}
+				</span>
+			  </em></strong>
+			</p>`
+								)
+								.join('\n')
+
+							// Replace the contents
+							editableDiv.innerHTML = formattedHTML + '<p><br></p>'
 						}
 					)
 				},
@@ -1701,32 +1717,60 @@ window.addEventListener('load', () => {
 
 	// Функция для открытия модального окна и вставки ссылки
 	const openLinkDialog = () => {
-		const dialog = document.createElement('div')
-		dialog.innerHTML = `
-        <div class="dialog" style="position: fixed; top: 78%; left: 8%; transform: translate(-50%, -50%); background: #313742; padding: 20px; border-radius: 8px; width: 300px; text-align: center; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
-        <button id="closeDialog" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; color: #FF5722; cursor: pointer;">&times;</button>
-        <label for="url" style="display: block; margin-bottom: 10px; font-size: 16px;">Введите ссылку:</label>
-        <input type="text" id="url" placeholder="https://forum.gtadom.com/" style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;">
-        <button id="insertLink" style="background-color: #FF5722; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Создать ссылку</button>
-            </div>
-    `
+		// Получаем настройки вместе с buttonBgColor
+		chrome.storage.sync.get(
+			['buttonBgColor', 'buttonTextColor'],
+			({ buttonBgColor, buttonTextColor }) => {
+				const btnColor = buttonBgColor || '#FF5722' // fallback
+				const btnTextColor = buttonTextColor || '#FFFFFF' // fallback
 
-		document.body.appendChild(dialog)
+				// Подключаем стили для placeholder один раз
+				if (!document.getElementById('dialog-placeholder-style')) {
+					const style = document.createElement('style')
+					style.id = 'dialog-placeholder-style'
+					style.textContent = `
+				#url::placeholder { color: ${btnTextColor}; opacity: 1; }
+				#url::-webkit-input-placeholder { color: ${btnTextColor}; }
+				#url:-ms-input-placeholder         { color: ${btnTextColor}; }
+				#url::-ms-input-placeholder        { color: ${btnTextColor}; }
+			  `
+					document.head.appendChild(style)
+				}
 
-		document.getElementById('closeDialog').addEventListener('click', () => {
-			document.body.removeChild(dialog) // Закрываем диалог
-		})
+				// Создаём диалог
+				const dialog = document.createElement('div')
+				dialog.innerHTML = `
+			<div class="dialog" style="position: fixed; top: 78%; left: 8.4%; transform: translate(-50%, -50%); background: rgb(34, 34, 34); padding: 20px; border-radius: 8px; width: 300px; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+			<button id="closeDialog" style="position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 18px; color: ${btnColor}; cursor: pointer;">
+				&times;
+			</button>
+			<label for="url" style="display: block; margin-bottom: 10px; font-size: 16px; color: ${btnTextColor};">
+				Введите ссылку:
+			</label>
+			<input type="text" id="url" placeholder="https://forum.gtadom.com/" style="width: 100%; padding: 8px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; background-color: rgb(61, 61, 61); color: #fff;"/>
+			<button id="insertLink" style="background-color: ${btnColor}; color: ${btnTextColor}; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+				Создать ссылку
+			</button>
+			</div>
+			`
 
-		document.getElementById('insertLink').addEventListener('click', () => {
-			const url = document.getElementById('url').value
+				document.body.appendChild(dialog)
 
-			if (url) {
-				const linkHtml = `<a href="${url}" target="_blank">Жалоба по которой были наказаны.</a>`
-				insertHtmlIntoContentEditable(linkHtml) // Вставляем ссылку в элемент contenteditable
+				document.getElementById('closeDialog').addEventListener('click', () => {
+					document.body.removeChild(dialog)
+				})
+
+				document.getElementById('insertLink').addEventListener('click', () => {
+					const url = document.getElementById('url').value
+					if (url) {
+						const linkHtml = `<a href="${url}" target="_blank">Жалоба по которой были наказаны.</a>`
+						insertHtmlIntoContentEditable(linkHtml)
+					}
+					document.body.removeChild(dialog)
+				})
 			}
-			document.body.removeChild(dialog) // Закрываем диалог
-		})
-	}
+		)
+	}	  
 
 	const createAdminButtonsR = (container, isRightContainer = false) => {
 		container.appendChild(
@@ -1734,52 +1778,70 @@ window.addEventListener('load', () => {
 				'Форматировать текст',
 				() => {
 					chrome.storage.sync.get(
-						['selectedFont', 'selectedFontSize', 'primaryColor'],
-						data => {
+						[
+							'selectedFont',
+							'selectedFontSize',
+							'primaryColor',
+							'textAlign',
+						],
+						({
+							selectedFont,
+							selectedFontSize,
+							primaryColor,
+							textAlign,
+						}) => {
 							const editableDiv = document.querySelector(
 								'.fr-element.fr-view[contenteditable="true"]'
 							)
-							if (editableDiv) {
-								const selectedFont = data.selectedFont || 'Book Antiqua'
-								const selectedFontSize = data.selectedFontSize || '16px'
-								const primaryColor = data.primaryColor || '#ffffff'
-
-								// Получаем только текст без HTML
-								let rawText = editableDiv.innerText || ''
-
-								// Убираем лишние пробелы, табы и лишние символы
-								rawText = rawText
-									.replace(/\u00A0/g, ' ') // заменяем неразрывные пробелы на обычные
-									.replace(/\t+/g, ' ') // убираем табуляции
-									.replace(/ +/g, ' ') // убираем повторяющиеся пробелы
-									.replace(/ *\n */g, '\n') // убираем пробелы вокруг переносов строк
-									.trim() // убираем пробелы с начала и конца
-
-								const lines = rawText
-									.split(/\r?\n/)
-									.filter(line => line.length > 0)
-
-								if (lines.length === 0) {
-									alert('Нет текста для форматирования.')
-									return
-								}
-
-								const formattedHTML = lines
-									.map(
-										line => `
-                    <p style="text-align: center;">
-                        <strong><em>
-                            <span style="color: ${primaryColor}; font-size: ${selectedFontSize}px; font-family: '${selectedFont}'; font-weight: bold;">
-                                ${line}
-                            </span>
-                        </em></strong>
-                    </p>
-                `
-									)
-									.join('\n')
-
-								editableDiv.innerHTML = formattedHTML + '<p><br></p>'
+							if (!editableDiv) {
+								alert('Не найдено поле для редактирования.')
+								return
 							}
+
+							// Fallbacks
+							const fontFamily = selectedFont || 'Arial'
+							const fontSizeNumber = parseInt(selectedFontSize, 10) || 15
+							const color = primaryColor || '#ffffff'
+							const align = textAlign || 'left'
+
+							// Get raw text and normalize whitespace
+							let rawText = editableDiv.innerText || ''
+							rawText = rawText
+								.replace(/\u00A0/g, ' ')
+								.replace(/\t+/g, ' ')
+								.replace(/ +/g, ' ')
+								.replace(/ *\n */g, '\n')
+								.trim()
+
+							const lines = rawText
+								.split(/\r?\n/)
+								.filter(line => line.length > 0)
+							if (lines.length === 0) {
+								alert('Нет текста для форматирования.')
+								return
+							}
+
+							// Build the new HTML
+							const formattedHTML = lines
+								.map(
+									line => `
+			<p style="text-align: ${align}; margin: 0;">
+			  <strong><em>
+				<span style="
+				  color: ${color};
+				  font-size: ${fontSizeNumber}px;
+				  font-family: '${fontFamily}';
+				  font-weight: bold;
+				">
+				  ${line}
+				</span>
+			  </em></strong>
+			</p>`
+								)
+								.join('\n')
+
+							// Replace the contents
+							editableDiv.innerHTML = formattedHTML + '<p><br></p>'
 						}
 					)
 				},
@@ -1872,9 +1934,9 @@ window.addEventListener('load', () => {
 		chrome.storage.sync.get(
 			['primaryColor', 'statusColor', 'editColor'],
 			data => {
-				const pC = data.primaryColor || '#FF5722'
-				const sC = data.statusColor || '#F1E207'
-				const eC = data.editColor || '#FFA500'
+				const pC = data.primaryColor || '#ffffff'
+				const sC = data.statusColor || '#ff2416'
+				const eC = data.editColor || '#f3ec14'
 				const resolveColor = key => {
 					switch (key) {
 						case 'primaryColor':
@@ -2055,5 +2117,211 @@ function applyexpandableSignatures() {
     });
 }
 
+
+;(() => {
+	// === Утилиты парсинга ===
+	function cssColorToHsla(cssColor) {
+		const ctx = document.createElement('canvas').getContext('2d')
+		ctx.fillStyle = cssColor
+		const norm = ctx.fillStyle
+		const m = norm.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
+		if (!m) return null
+		let [, r, g, b, a = 1] = m.map((v, i) => (i > 0 ? +v : v))
+		r /= 255
+		g /= 255
+		b /= 255
+		const max = Math.max(r, g, b),
+			min = Math.min(r, g, b)
+		let h = 0,
+			s = 0,
+			l = (max + min) / 2
+		if (max !== min) {
+			const d = max - min
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+			switch (max) {
+				case r:
+					h = (g - b) / d + (g < b ? 6 : 0)
+					break
+				case g:
+					h = (b - r) / d + 2
+					break
+				case b:
+					h = (r - g) / d + 4
+					break
+			}
+			h *= 60
+		}
+		return { h, s: s * 100, l: l * 100, a }
+	}
+
+	// === Детекторы цвета ===
+	function isOrange(color) {
+		const hs = cssColorToHsla(color)
+		return (
+			hs && hs.h >= 15 && hs.h <= 45 && hs.s >= 30 && hs.l >= 20 && hs.l <= 80
+		)
+	}
+
+	function isGray(color) {
+		const hs = cssColorToHsla(color)
+		return hs && hs.s <= 15 && hs.l >= 5 && hs.l <= 80
+	}
+
+	// === Замена цветовых вхождений в CSS-строке ===
+	function replaceInCssValue(val, newOrange, newDark) {
+		return val.replace(
+			/(#(?:[0-9A-Fa-f]{3,6})|rgba?\([^)]+\)|hsla?\([^)]+\))/g,
+			m => (isOrange(m) ? newOrange : isGray(m) ? newDark : m)
+		)
+	}
+
+	// === Получение цветов из storage (или фолбэки) ===
+	function getStoredColors(cb) {
+		if (window.chrome?.storage?.sync) {
+			chrome.storage.sync.get(
+				['buttonBgColor', 'darkColor'],
+				({ buttonBgColor, darkColor }) => {
+					cb(buttonBgColor || '#FF5722', darkColor || '#111111')
+				}
+			)
+		} else {
+			console.warn('chrome.storage недоступен — используем дефолты')
+			cb('#FF5722', '#111111')
+		}
+	}
+
+	// === Замена в <style> и <link> стилях страницы ===
+	function replaceInStylesheets(oColor, dColor) {
+		for (const sheet of document.styleSheets) {
+			let rules
+			try {
+				rules = sheet.cssRules
+			} catch {
+				continue
+			}
+			for (const rule of Array.from(rules)) {
+				if (!rule.style) continue
+				for (const prop of rule.style) {
+					const val = rule.style.getPropertyValue(prop)
+					if (!val || val === 'none') continue
+					const out = replaceInCssValue(val, oColor, dColor)
+					if (out !== val) {
+						const prio = rule.style.getPropertyPriority(prop)
+						rule.style.setProperty(prop, out, prio)
+					}
+				}
+			}
+		}
+	}
+
+	// === Замена inline-стиля в атрибутах style="…" ===
+	function replaceInInlineStyles(oColor, dColor) {
+		document.querySelectorAll('[style]').forEach(el => {
+			const raw = el.getAttribute('style')
+			const out = replaceInCssValue(raw, oColor, dColor)
+			if (out !== raw) {
+				el.setAttribute('style', out)
+			}
+		})
+	}
+
+	// === Замена через getComputedStyle + инлайн-стиль ===
+	function replaceComputed(oColor, dColor) {
+		const props = [
+			'color',
+			'background',
+			'background-color',
+			'background-image',
+			'border',
+			'border-color',
+			'box-shadow',
+			'text-shadow',
+			'outline',
+		]
+		document.querySelectorAll('*').forEach(el => {
+			const cs = getComputedStyle(el)
+			props.forEach(prop => {
+				const val = cs.getPropertyValue(prop)
+				if (val && val !== 'none') {
+					const out = replaceInCssValue(val, oColor, dColor)
+					if (out !== val) {
+						el.style.setProperty(prop, out, 'important')
+					}
+				}
+			})
+		})
+	}
+
+	// === Инжект для ::selection ===
+	function injectSelection(oColor) {
+		const id = 'replace-orange-selection'
+		if (document.getElementById(id)) return
+		const st = document.createElement('style')
+		st.id = id
+		st.textContent = `
+		*::selection, *::-moz-selection {
+		  background: ${oColor} !important;
+		  color: #fff   !important;
+		}
+	  `
+		document.head.appendChild(st)
+	}
+
+	// === Главная функция замены ===
+	function doReplace() {
+		getStoredColors((orange, dark) => {
+			injectSelection(orange)
+			replaceInStylesheets(orange, dark)
+			replaceInInlineStyles(orange, dark)
+			replaceComputed(orange, dark)
+
+			// Принудительный фон для body
+			document.body.style.setProperty('background-color', dark, 'important')
+
+			// Фон чуть светлее черного для классов block-*, node-*, message-*
+			// а также menu-row и p-navSticky
+			const blockColor = '#222222'
+			if (!document.getElementById('replace-block-style')) {
+				const st = document.createElement('style')
+				st.id = 'replace-block-style'
+				st.textContent = `
+			[class^="block-"], [class*=" block-"],
+			[class^="node-"],  [class*=" node-"],
+			[class^="p-nav"],  [class*=" p-nav"],
+			[class^="message-"], [class*=" message-"],
+			.message-cell.message-cell--user,
+			.menu-row.menu-row--separated.menu-row--clickable,
+			.p-navSticky.p-navSticky--all.uix_stickyBar {
+			  background-color: ${blockColor} !important;
+			}
+			/* userBanner-before получает buttonBgColor */
+			.userBanner-before {
+			  background-color: ${orange} !important;
+			}
+		  `
+				document.head.appendChild(st)
+			}
+
+			console.info(
+				'[replaceOrange] оранжевый→',
+				orange,
+				'серый→',
+				dark,
+				'block/node/message/menu→',
+				blockColor,
+				'userBanner-before→',
+				orange
+			)
+		})
+	}
+
+	// === Автозапуск на DOMContentLoaded ===
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', doReplace)
+	} else {
+		doReplace()
+	}
+})()
+  
+
 document.addEventListener('DOMContentLoaded', applyexpandableSignatures);
-applyexpandableSignatures()

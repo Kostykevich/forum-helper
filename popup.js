@@ -60,23 +60,24 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 
 			// Шрифт
-			fontSelect.value = data.selectedFont || 'Book Antiqua'
+			fontSelect.value = data.selectedFont || 'Arial'
 
 			// Размер шрифта
-			fontSizeSelect.value = data.selectedFontSize || 16
+			fontSizeSelect.value = data.selectedFontSize || 15
 
 			// Цвета
-			primaryColorInput.value = data.primaryColor || '#FF5733'
-			statusColorInput.value  = data.statusColor  || '#28B463'
-			editColorInput.value    = data.editColor    || '#3498DB'
+			primaryColorInput.value = data.primaryColor || '#ffffff'
+			statusColorInput.value  = data.statusColor  || '#ff2416'
+			editColorInput.value    = data.editColor    || '#f3ec14'
 
-			// Выравнивание
+			// Выравнивание (по умолчанию пусть будет слева)
 			textAlignSelect.value = data.textAlign || 'left'
 
 			// Жирный
 			if (typeof data.boldText === 'boolean') {
 				boldTextCheckbox.checked = data.boldText
 			} else {
+				// по умолчанию пусть будет false
 				boldTextCheckbox.checked = false
 			}
 
@@ -84,17 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (typeof data.italicText === 'boolean') {
 				italicTextCheckbox.checked = data.italicText
 			} else {
+				// по умолчанию пусть будет false
 				italicTextCheckbox.checked = false
 			}
 
-			// <-- УСТАНАВЛИВАЕМ СОСТОЯНИЕ ДЛЯ НОВОГО ЧЕКБОКСА -->
+			// Отображение кнопок на странице
 			if (typeof data.showButtonsOnPage === 'boolean') {
 				showButtonsOnPageCheckbox.checked = data.showButtonsOnPage
 			} else {
-				// по умолчанию пусть будет true (или false, как вам удобнее)
+				// по умолчанию пусть будет true
 				showButtonsOnPageCheckbox.checked = true
 			}
-			// <-- КОНЕЦ -->
 		}
 	)
 
@@ -106,11 +107,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		chrome.storage.sync.set({ autoSend: autoSendCheckbox.checked })
 	})
 	fontSelect.addEventListener('change', () => {
-		chrome.storage.sync.set({ selectedFont: fontSelect.value })
+		chrome.storage.sync.set({ selectedFontBTN: fontSelect.value })
 	})
 	fontSizeSelect.addEventListener('input', () => {
 		const val = parseInt(fontSizeSelect.value, 10)
-		chrome.storage.sync.set({ selectedFontSize: isNaN(val) ? 16 : val })
+		chrome.storage.sync.set({ selectedFontBTNSize: isNaN(val) ? 16 : val })
 	})
 	primaryColorInput.addEventListener('input', () => {
 		chrome.storage.sync.set({ primaryColor: primaryColorInput.value })
