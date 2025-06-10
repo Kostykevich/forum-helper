@@ -2285,7 +2285,7 @@ function applyexpandableSignatures() {
 				const st = document.createElement('style')
 				st.id = 'replace-block-style'
 				st.textContent = `
-			[class^="block-"], [class*=" block-"],
+			[class^="block-body"], [class*=" block-body"],
 			[class^="node-"],  [class*=" node-"],
 			[class^="p-nav"],  [class*=" p-nav"],
 			[class^="message-"], [class*=" message-"],
