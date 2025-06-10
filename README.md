@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Forum Helper Chrome Extension v2.2
 
 **A lightweight assistant for the Radmir «Мой Дом» forum, developed by @Kostykevich.**
