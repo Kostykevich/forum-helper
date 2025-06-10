@@ -21,10 +21,8 @@
 		{
 			"label": "Жалоба не по форме",
 			"text1": "Жалоба оформлена не по форме.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -32,10 +30,8 @@
 		{
 			"label": "Не полный откат",
 			"text1": "Откат не полный.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -51,18 +47,14 @@
 		},
 		{
 			"label": "Открыть жалобу",
-			"text1": "",
 			"text2": "Открыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
 		},
 		{
 			"label": "Закрыть жалобу",
-			"text1": "",
 			"text2": "Закрыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
@@ -97,10 +89,8 @@
 		{
 			"label": "Жалоба не по форме",
 			"text1": "Жалоба оформлена не по форме.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -108,10 +98,8 @@
 		{
 			"label": "Не полный откат",
 			"text1": "Откат не полный.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -127,18 +115,14 @@
 		},
 		{
 			"label": "Открыть жалобу",
-			"text1": "",
 			"text2": "Открыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
 		},
 		{
 			"label": "Закрыть жалобу",
-			"text1": "",
 			"text2": "Закрыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
@@ -173,10 +157,8 @@
 		{
 			"label": "Жалоба не по форме",
 			"text1": "Жалоба оформлена не по форме.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -184,10 +166,8 @@
 		{
 			"label": "Не полный откат",
 			"text1": "Откат не полный.",
-			"text2": "",
 			"text3": "На редактирование 12 часов.",
 			"color1": "primaryColor",
-			"color2": "editColor",
 			"color3": "editColor",
 			"shouldClose": false,
 			"shouldSend": true
@@ -203,18 +183,14 @@
 		},
 		{
 			"label": "Открыть жалобу",
-			"text1": "",
 			"text2": "Открыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
 		},
 		{
 			"label": "Закрыть жалобу",
-			"text1": "",
 			"text2": "Закрыто.",
-			"color1": "primaryColor",
 			"color2": "statusColor",
 			"shouldClose": true,
 			"shouldSend": true
