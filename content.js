@@ -400,100 +400,109 @@ window.addEventListener('load', () => {
 
     const createAllButtonsR = rootContainer => {
 		chrome.storage.sync.get(
-		  [
-			'buttonBgColor',
-			'buttonBold',
-			'buttonItalic',
-		  ],
-		  data => {
-			const baseColor = data.buttonBgColor || '#FF5722';
-			const boldOn    = !!data.buttonBold;
-			const italicOn  = !!data.buttonItalic;
-	  
-			// Функция затемнения HEX-цвета на заданный процент
-			function darkenColor(hex, percent) {
-			  hex = hex.replace(/^#/, '');
-			  if (hex.length === 3) {
-				hex = hex.split('').map(ch => ch + ch).join('');
-			  }
-			  const num = parseInt(hex, 16);
-			  const r = (num >> 16) & 0xff;
-			  const g = (num >> 8) & 0xff;
-			  const b = num & 0xff;
-			  const newR = Math.max(0, Math.min(255, Math.floor(r * (1 - percent / 100))));
-			  const newG = Math.max(0, Math.min(255, Math.floor(g * (1 - percent / 100))));
-			  const newB = Math.max(0, Math.min(255, Math.floor(b * (1 - percent / 100))));
-			  return (
-				'#' +
-				((1 << 24) | (newR << 16) | (newG << 8) | newB)
-				  .toString(16)
-				  .slice(1)
-			  );
-			}
-	  
-			const borderColor   = darkenColor(baseColor, 10);  // рамка на 10% темнее
-			const hoverBgColor  = darkenColor(baseColor, 20);  // фон при hover на 20% темнее
-			const dropdownBgColor = darkenColor(hoverBgColor, 20);
-	  
-			// Общая функция создания кнопок
-			function makeButton(label) {
-			  const btn = document.createElement('button');
-			  btn.innerText = label;
-			  btn.style.padding       = '10px 15px';
-			  btn.style.backgroundColor = baseColor;
-			  btn.style.color         = 'white';
-			  btn.style.border        = `2px solid ${borderColor}`;
-			  btn.style.borderRadius  = '10px';
-			  btn.style.cursor        = 'pointer';
-			  btn.style.fontSize      = '16px';
-			  btn.style.marginBottom  = '10px';
-			  btn.style.position      = 'relative';
-			  btn.style.fontWeight    = boldOn   ? 'bold'   : 'normal';
-			  btn.style.fontStyle     = italicOn ? 'italic' : 'normal';
-	  
-			  btn.addEventListener('mouseover', () => {
-				btn.style.backgroundColor = hoverBgColor;
-				btn.style.borderColor     = hoverBgColor;
-			  });
-			  btn.addEventListener('mouseout', () => {
-				btn.style.backgroundColor = baseColor;
-				btn.style.borderColor     = borderColor;
-			  });
-	  
-			  return btn;
-			}
-	  
-			// 1) Создаём основные кнопки
-			const mainButton_mute = makeButton('Mute');
-			const mainButton_ajail = makeButton('Ajail');
-			const mainButton_ban  = makeButton('Ban');
-	  
-			rootContainer.appendChild(mainButton_mute);
-			rootContainer.appendChild(mainButton_ajail);
-			rootContainer.appendChild(mainButton_ban);
-	  
-			// 2) Функция создания дропдауна
-			function createStyledContainer(id, parentButton) {
-			  const container = document.createElement('div');
-			  container.id = id;
-			  container.style.position        = 'absolute';
-			  container.style.backgroundColor = dropdownBgColor;
-			  container.style.border          = `2px solid ${dropdownBgColor}`;
-			  container.style.borderRadius    = '10px';
-			  container.style.padding         = '10px';
-			  container.style.display         = 'none';
-			  container.style.flexDirection   = 'column';
-			  container.style.boxShadow       = '0 4px 10px rgba(0,0,0,0.1)';
-			  container.style.zIndex          = '1000';
-	  
-			  const rect = parentButton.getBoundingClientRect();
-			  container.style.width = `${rect.width}px`;
-			  container.style.top   = `${rect.bottom + window.scrollY}px`;
-			  container.style.left  = `${rect.left + window.scrollX}px`;
-	  
-			  document.body.appendChild(container);
-			  return container;
-			}
+			['buttonBgColor', 'buttonBold', 'buttonItalic', 'buttonTextColor'],
+			data => {
+				const baseColor = data.buttonBgColor || '#FF5722'
+				const boldOn = !!data.buttonBold
+				const italicOn = !!data.buttonItalic
+				const buttonTextColor = data.buttonTextColor || 'white'
+
+				// Функция затемнения HEX-цвета на заданный процент
+				function darkenColor(hex, percent) {
+					hex = hex.replace(/^#/, '')
+					if (hex.length === 3) {
+						hex = hex
+							.split('')
+							.map(ch => ch + ch)
+							.join('')
+					}
+					const num = parseInt(hex, 16)
+					const r = (num >> 16) & 0xff
+					const g = (num >> 8) & 0xff
+					const b = num & 0xff
+					const newR = Math.max(
+						0,
+						Math.min(255, Math.floor(r * (1 - percent / 100)))
+					)
+					const newG = Math.max(
+						0,
+						Math.min(255, Math.floor(g * (1 - percent / 100)))
+					)
+					const newB = Math.max(
+						0,
+						Math.min(255, Math.floor(b * (1 - percent / 100)))
+					)
+					return (
+						'#' +
+						((1 << 24) | (newR << 16) | (newG << 8) | newB)
+							.toString(16)
+							.slice(1)
+					)
+				}
+
+				const borderColor = darkenColor(baseColor, 10) // рамка на 10% темнее
+				const hoverBgColor = darkenColor(baseColor, 20) // фон при hover на 20% темнее
+				const dropdownBgColor = darkenColor(hoverBgColor, 20)
+
+				// Общая функция создания кнопок
+				function makeButton(label) {
+					const btn = document.createElement('button')
+					btn.innerText = label
+					btn.style.padding = '10px 15px'
+					btn.style.backgroundColor = baseColor
+					btn.style.color = buttonTextColor
+					btn.style.border = `2px solid ${borderColor}`
+					btn.style.borderRadius = '10px'
+					btn.style.cursor = 'pointer'
+					btn.style.fontSize = '16px'
+					btn.style.marginBottom = '10px'
+					btn.style.position = 'relative'
+					btn.style.fontWeight = boldOn ? 'bold' : 'normal'
+					btn.style.fontStyle = italicOn ? 'italic' : 'normal'
+
+					btn.addEventListener('mouseover', () => {
+						btn.style.backgroundColor = hoverBgColor
+						btn.style.borderColor = hoverBgColor
+					})
+					btn.addEventListener('mouseout', () => {
+						btn.style.backgroundColor = baseColor
+						btn.style.borderColor = borderColor
+					})
+
+					return btn
+				}
+
+				// 1) Создаём основные кнопки
+				const mainButton_mute = makeButton('Mute')
+				const mainButton_ajail = makeButton('Ajail')
+				const mainButton_ban = makeButton('Ban')
+
+				rootContainer.appendChild(mainButton_mute)
+				rootContainer.appendChild(mainButton_ajail)
+				rootContainer.appendChild(mainButton_ban)
+
+				// 2) Функция создания дропдауна
+				function createStyledContainer(id, parentButton) {
+					const container = document.createElement('div')
+					container.id = id
+					container.style.position = 'absolute'
+					container.style.backgroundColor = dropdownBgColor
+					container.style.border = `2px solid ${dropdownBgColor}`
+					container.style.borderRadius = '10px'
+					container.style.padding = '10px'
+					container.style.display = 'none'
+					container.style.flexDirection = 'column'
+					container.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)'
+					container.style.zIndex = '1000'
+
+					const rect = parentButton.getBoundingClientRect()
+					container.style.width = `${rect.width}px`
+					container.style.top = `${rect.bottom + window.scrollY}px`
+					container.style.left = `${rect.left + window.scrollX}px`
+
+					document.body.appendChild(container)
+					return container
+				}
 
 				// 3) создаём три «дропдауна» сразу после того, как кнопки вставлены в DOM
 				const buttonContainer_mute = createStyledContainer(
@@ -515,32 +524,36 @@ window.addEventListener('load', () => {
 
 				// вспомогательная функция для позиционирования
 				function positionBelow(button, dropdown) {
-				  const rect = button.getBoundingClientRect()
-				  dropdown.style.top = rect.bottom + window.scrollY + 3 + 'px'
-				  dropdown.style.left = rect.left + window.scrollX + 'px'
+					const rect = button.getBoundingClientRect()
+					dropdown.style.top = rect.bottom + window.scrollY + 3 + 'px'
+					dropdown.style.left = rect.left + window.scrollX + 'px'
 				}
-			
+
 				// функция закрытия контейнера
 				function closeCurrent() {
-				  if (current.container) {
-					current.container.style.display = 'none'
-					current.button.style.backgroundColor = btnBg
-					current.button.style.borderColor = btnBg
-					current = { button: null, container: null }
-				  }
+					if (current.container) {
+						current.container.style.display = 'none'
+						current.button.style.backgroundColor = btnBg
+						current.button.style.borderColor = btnBg
+						current = { button: null, container: null }
+					}
 				}
-			
+
 				// обработчик кликов вне кнопок и контейнеров
 				document.addEventListener('click', e => {
-				  const isInside = [
-					mainButton_mute, mainButton_ajail, mainButton_ban,
-					buttonContainer_mute, buttonContainer_ajail, buttonContainer_ban
-				  ].some(el => el.contains(e.target))
-				  if (!isInside) closeCurrent()
+					const isInside = [
+						mainButton_mute,
+						mainButton_ajail,
+						mainButton_ban,
+						buttonContainer_mute,
+						buttonContainer_ajail,
+						buttonContainer_ban,
+					].some(el => el.contains(e.target))
+					if (!isInside) closeCurrent()
 				})
-			
+
 				// 3) навешиваем event listeners
-				;;[
+				;[
 					{
 						button: mainButton_mute,
 						container: buttonContainer_mute,
@@ -1476,7 +1489,7 @@ window.addEventListener('load', () => {
 						},
 						'#FF5722'
 					)
-				)				  
+				)
 
 				rootContainer.appendChild(
 					createButton(
@@ -1596,7 +1609,8 @@ window.addEventListener('load', () => {
 						// Обновляем состояние при изменении чекбокса
 					})
 				)
-			})
+			}
+		)
 		}
 
 
