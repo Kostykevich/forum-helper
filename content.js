@@ -767,6 +767,33 @@ window.addEventListener('load', () => {
 
 				buttonContainer_mute.appendChild(
 					createButton(
+						'NRP music',
+						() => {
+							const playerCodes = getPlayerCodes()
+							if (playerCodes) {
+								let complaintTypeText =
+									complaintTypes[localStorage.getItem('complaintType')] ||
+									complaintTypes.nonFactional
+								let text = `/offmutevoice ${playerCodes} 30m NRP music [${complaintTypeText} | ${getComplaintId()}]`
+								if (
+									JSON.parse(localStorage.getItem('requestEnabled') || 'false')
+								) {
+									const adminNick =
+										localStorage.getItem('adminNick') ||
+										'неизвестный администратор'
+									text += `. Выдано по просьбе ${adminNick}.`
+								}
+								insertText(text)
+							} else {
+								alert('Не удалось найти нужные коды игроков')
+							}
+						},
+						'#FF5722'
+					)
+				)
+
+				buttonContainer_mute.appendChild(
+					createButton(
 						'Banword',
 						() => {
 							const playerCodes = getPlayerCodes()
