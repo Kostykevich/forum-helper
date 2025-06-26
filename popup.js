@@ -107,12 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		chrome.storage.sync.set({ autoSend: autoSendCheckbox.checked })
 	})
 	fontSelect.addEventListener('change', () => {
-		chrome.storage.sync.set({ selectedFontBTN: fontSelect.value })
+		chrome.storage.sync.set({ selectedFont: fontSelect.value })
 	})
 	fontSizeSelect.addEventListener('input', () => {
 		const val = parseInt(fontSizeSelect.value, 10)
-		chrome.storage.sync.set({ selectedFontBTNSize: isNaN(val) ? 16 : val })
-	})
+		chrome.storage.sync.set({ selectedFontSize: isNaN(val) ? 16 : val })
+	})	
 	primaryColorInput.addEventListener('input', () => {
 		chrome.storage.sync.set({ primaryColor: primaryColorInput.value })
 	})
