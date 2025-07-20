@@ -351,34 +351,35 @@ window.addEventListener('load', () => {
 		const leftContainer = document.querySelector('.left-buttons')
 		const rightContainer = document.querySelector('.right-buttons')
 
-		// Сначала проверяем флаг showButtonsOnPage
 		chrome.storage.sync.get(['showButtonsOnPage'], data => {
-			const show =
-				typeof data.showButtonsOnPage === 'boolean'
-					? data.showButtonsOnPage
-					: true
+			const show = typeof data.showButtonsOnPage === 'boolean' ? data.showButtonsOnPage : true
 
-			// Если не показывать кнопки, просто очищаем контейнеры и выходим
 			if (!show) {
 				leftContainer.innerHTML = ''
 				rightContainer.innerHTML = ''
 				return
 			}
 
-			// Иначе – продолжаем как раньше
 			leftContainer.innerHTML = ''
 			rightContainer.innerHTML = ''
 
 			chrome.storage.sync.get([`buttonsConfig_${type}`], data2 => {
 				let configs = data2[`buttonsConfig_${type}`]
-				if (!Array.isArray(configs) || configs.length === 0) {
-					configs = defaultConfigs[type] || []
+				if (type !== 'default') {
+					if (!Array.isArray(configs) || configs.length === 0) {
+						configs = defaultConfigs[type] || []
+					}
 				}
-				renderLeftButtons(leftContainer, configs)
+
+				// 👉 Только если не режим "default" — отрисовываем левые кнопки
+				if (type !== 'default') {
+					renderLeftButtons(leftContainer, configs)
+				}
 
 				switch (type) {
 					case 'criminal':
 					case 'state':
+					case 'lider':
 					case 'nonFactional':
 						createAllButtonsR(rightContainer, true)
 						break
@@ -387,6 +388,9 @@ window.addEventListener('load', () => {
 						break
 					case 'discord':
 						createDsButtonsR(rightContainer, true)
+						break
+					case 'default':
+						createDefaultButtonsR(rightContainer) // только правые кнопки
 						break
 				}
 			})
@@ -1640,6 +1644,85 @@ window.addEventListener('load', () => {
 		)
 		}
 
+	const createDefaultButtonsR = container => {
+		const defaultLinks = [
+			{ label: 'Жалобы на криминальные структуры', url: '/Жалобы-на-игроков-криминальных-структур.27/' },
+			{ label: 'Жалобы на государсвенных служащих', url: '/forums/Жалобы-на-государственных-служащих.26/' },
+			{ label: 'Жалобы на нефракционных игроков', url: '/forums/Жалобы-на-нефракционных-игроков.25/' },
+			{ label: 'Жалобы на лидеров', url: '/forums/Жалобы-на-лидеров.28/' },
+			{ label: 'Жалобы на администрацию', url: '/forums/Жалобы-на-администрацию.23/' },
+			{ label: 'Discord-разбаны', url: '/forums/Разбан-в-дискорде.69/' },
+		]
+
+		container.innerHTML = ''
+
+		chrome.storage.sync.get(
+			['buttonBgColor', 'buttonBold', 'buttonItalic', 'buttonTextColor'],
+			data => {
+				const baseColor = data.buttonBgColor || '#FF5722'
+				const boldOn = !!data.buttonBold
+				const italicOn = !!data.buttonItalic
+				const buttonTextColor = data.buttonTextColor || 'white'
+
+				// Функция затемнения HEX-цвета
+				function darkenColor(hex, percent) {
+					hex = hex.replace(/^#/, '')
+					if (hex.length === 3) {
+						hex = hex.split('').map(ch => ch + ch).join('')
+					}
+					const num = parseInt(hex, 16)
+					const r = (num >> 16) & 0xff
+					const g = (num >> 8) & 0xff
+					const b = num & 0xff
+					const newR = Math.max(0, Math.min(255, Math.floor(r * (1 - percent / 100))))
+					const newG = Math.max(0, Math.min(255, Math.floor(g * (1 - percent / 100))))
+					const newB = Math.max(0, Math.min(255, Math.floor(b * (1 - percent / 100))))
+					return (
+						'#' +
+						((1 << 24) | (newR << 16) | (newG << 8) | newB)
+							.toString(16)
+							.slice(1)
+					)
+				}
+
+				const borderColor = darkenColor(baseColor, 10)
+				const hoverBgColor = darkenColor(baseColor, 20)
+
+				// Создание и применение кнопок
+				defaultLinks.forEach(link => {
+					const btn = document.createElement('button')
+					btn.innerText = link.label
+					btn.style.padding = '10px 15px'
+					btn.style.backgroundColor = baseColor
+					btn.style.color = buttonTextColor
+					btn.style.border = `2px solid ${borderColor}`
+					btn.style.borderRadius = '10px'
+					btn.style.cursor = 'pointer'
+					btn.style.fontSize = '16px'
+					btn.style.marginBottom = '10px'
+					btn.style.width = '100%'
+					btn.style.fontWeight = boldOn ? 'bold' : 'normal'
+					btn.style.fontStyle = italicOn ? 'italic' : 'normal'
+					btn.style.transition = 'all 0.2s ease'
+
+					btn.addEventListener('mouseover', () => {
+						btn.style.backgroundColor = hoverBgColor
+						btn.style.borderColor = hoverBgColor
+					})
+					btn.addEventListener('mouseout', () => {
+						btn.style.backgroundColor = baseColor
+						btn.style.borderColor = borderColor
+					})
+
+					btn.addEventListener('click', () => {
+						location.href = link.url
+					})
+
+					container.appendChild(btn)
+				})
+			}
+		)
+	}
 
 	const createDsButtonsR = (container, isRightContainer = false) => {
 		container.appendChild(
@@ -2029,39 +2112,33 @@ window.addEventListener('load', () => {
 	}      
 
 	const updateButtons = () => {
-		const complaintType =
-			localStorage.getItem('complaintType') || 'nonFactional'
+		const complaintType = localStorage.getItem('complaintType') || 'nonFactional'
 		const leftContainer = document.querySelector('.left-buttons')
 		const rightContainer = document.querySelector('.right-buttons')
 
-		// Сначала проверяем флаг showButtonsOnPage
 		chrome.storage.sync.get(['showButtonsOnPage'], data => {
-			const show =
-				typeof data.showButtonsOnPage === 'boolean'
-					? data.showButtonsOnPage
-					: true // по умолчанию — true
-
-			// Если не показывать кнопки, просто очищаем контейнеры и выходим
+			const show = typeof data.showButtonsOnPage === 'boolean' ? data.showButtonsOnPage : true
 			if (!show) {
 				leftContainer.innerHTML = ''
 				rightContainer.innerHTML = ''
 				return
 			}
 
-			// Иначе – продолжаем как раньше
 			leftContainer.innerHTML = ''
 			rightContainer.innerHTML = ''
 
 			chrome.storage.sync.get([`buttonsConfig_${complaintType}`], data2 => {
 				let configs = data2[`buttonsConfig_${complaintType}`]
-				if (!Array.isArray(configs) || configs.length === 0) {
-					configs = defaultConfigs[complaintType] || []
+				if (complaintType !== 'default') {
+					if (!Array.isArray(configs) || configs.length === 0) {
+						configs = defaultConfigs[complaintType] || []
+					}
 				}
-				renderLeftButtons(leftContainer, configs)
 
 				switch (complaintType) {
 					case 'criminal':
 					case 'state':
+					case 'lider':
 					case 'nonFactional':
 						createAllButtonsR(rightContainer)
 						break
@@ -2071,6 +2148,13 @@ window.addEventListener('load', () => {
 					case 'discord':
 						createDsButtonsR(rightContainer)
 						break
+					case 'default':
+						createDefaultButtonsR(rightContainer)
+						break
+					default:
+						// неизвестный тип — очищаем всё
+						leftContainer.innerHTML = ''
+						rightContainer.innerHTML = ''
 				}
 			})
 		})
@@ -2083,7 +2167,7 @@ window.addEventListener('load', () => {
 				const selectedType = event.target.value
 				localStorage.setItem('complaintType', selectedType)
 
-				// Эмуляция нажатия клавиши F5
+				// Эмуляция F5
 				window.dispatchEvent(
 					new KeyboardEvent('keydown', { keyCode: 116, which: 116 })
 				)
@@ -2094,35 +2178,45 @@ window.addEventListener('load', () => {
 	const complaintTypes = {
 		criminal: 'Жалобы на игроков криминальных структур',
 		state: 'Жалобы на государственных служащих',
+		lider: 'Жалобы на лидеров',
 		nonFactional: 'Жалобы на нефракционных игроков',
 		admin: 'Жалобы на администрацию',
-		discord: 'Разбан в дискорде',
+		discord: 'Разбан в дискорде'
 	}
 
 	let currentComplaintIndex = 0
 
 	const switchComplaint = () => {
 		const keys = Object.keys(complaintTypes)
-		const currentType = keys[currentComplaintIndex]
-		const targetElement = Array.from(
-			document.querySelectorAll('span[itemprop="name"]')
-		).find(el => el.textContent.includes(complaintTypes[currentType]))
+		let found = false
 
-		if (targetElement) {
-			console.log(`Выбран режим жалоб: ${complaintTypes[currentType]}`)
-			localStorage.setItem('complaintType', currentType)
-			toggleButtons(currentType) // Ваша логика переключения
+		for (let i = 0; i < keys.length; i++) {
+			const typeKey = keys[(currentComplaintIndex + i) % keys.length]
+			const targetElement = Array.from(document.querySelectorAll('span[itemprop="name"]'))
+				.find(el => el.textContent.includes(complaintTypes[typeKey]))
+
+			if (targetElement) {
+				console.log(`Выбран режим жалоб: ${complaintTypes[typeKey]}`)
+				localStorage.setItem('complaintType', typeKey)
+				toggleButtons(typeKey)
+				currentComplaintIndex = (currentComplaintIndex + i + 1) % keys.length
+				found = true
+				break
+			}
 		}
 
-		currentComplaintIndex = (currentComplaintIndex + 1) % keys.length
+		if (!found) {
+			// Ни один тип не найден — устанавливаем "default"
+			console.warn('❌ Ни один тип жалоб не найден. Активирован режим по умолчанию.')
+			localStorage.setItem('complaintType', 'default')
+			toggleButtons('default')
+		}
 	}
 
-	// Запуск автоматического переключения
 	const executeSwitchComplaint = times => {
 		let count = 0
 		const interval = setInterval(() => {
 			if (count < times) {
-				times
 				switchComplaint()
 				count++
 			} else {
@@ -2134,8 +2228,9 @@ window.addEventListener('load', () => {
 	executeSwitchComplaint(5)
 
 	createButtonContainers()
-	updatePageOnComplaintTypeChange() // при смене селекта
-	updateButtons() // отрисовать сразу, при загрузке страницы
+	updatePageOnComplaintTypeChange()
+	updateButtons()
+
 });
 
 function isLightColor(rgbString) {

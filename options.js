@@ -1,7 +1,7 @@
 // options.js
 
 // 1) Список типов жалоб
-const complaintTypes = ['criminal', 'state', 'nonFactional', 'admin', 'discord']
+const complaintTypes = ['criminal', 'state', 'nonFactional', 'lider', 'admin', 'discord']
 
 // 2) Заготовка для defaultConfigs — будем загружать из JSON-файла
 let defaultConfigs = {}
@@ -231,6 +231,7 @@ function toggleButtons(type) {
 		switch (type) {
 			case 'criminal':
 			case 'state':
+			case 'lider':
 			case 'nonFactional':
 				createAllButtonsR(rightContainer)
 				break

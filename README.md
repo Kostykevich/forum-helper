@@ -1,4 +1,4 @@
-# Forum Helper Chrome Extension v2.23
+# Forum Helper Chrome Extension v2.3
 
 **A lightweight assistant for the Radmir «Мой Дом» forum, developed by @Kostykevich.**
 
